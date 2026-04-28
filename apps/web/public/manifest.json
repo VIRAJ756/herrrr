@@ -1,0 +1,11 @@
+{
+  "name": "GUARDIAN",
+  "short_name": "GUARDIAN",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#070B12",
+  "theme_color": "#070B12",
+  "description": "Women safety & risk zone mapping platform.",
+  "icons": []
+}
+

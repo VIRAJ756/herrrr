@@ -1,0 +1,44 @@
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import type { Env } from "./config/env";
+import { apiRateLimiter } from "./middleware/rateLimiter";
+import { errorHandler } from "./middleware/errorHandler";
+import { authRouter } from "./routes/auth";
+import { incidentsRouter } from "./routes/incidents";
+import { zonesRouter } from "./routes/zones";
+import { sosRouter } from "./routes/sos";
+import { journeyRouter } from "./routes/journey";
+import { contactsRouter } from "./routes/contacts";
+import { aiRouter } from "./routes/ai";
+
+/** Build the Express app with all routes and middleware. */
+export function createApp(env: Env): express.Express {
+  const app = express();
+
+  app.use(helmet());
+  app.use(
+    cors({
+      origin: true,
+      credentials: true,
+    }),
+  );
+  app.use(express.json({ limit: "2mb" }));
+  app.use(apiRateLimiter);
+
+  app.get("/api/health", (_req, res) => {
+    res.json({ ok: true, env: env.NODE_ENV, time: new Date().toISOString() });
+  });
+
+  app.use("/api/auth", authRouter());
+  app.use("/api/incidents", incidentsRouter());
+  app.use("/api/zones", zonesRouter());
+  app.use("/api/sos", sosRouter());
+  app.use("/api/journey", journeyRouter());
+  app.use("/api/contacts", contactsRouter());
+  app.use("/api/ai", aiRouter());
+
+  app.use(errorHandler);
+  return app;
+}
+
