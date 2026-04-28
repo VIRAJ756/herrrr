@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { useSOSStore } from "../store/sosStore";
 import { useGeolocation } from "./useGeolocation";
 import { useSocket } from "./useSocket";
+import { api } from "../services/api";
 
 export function useSOS(): {
   stage: ReturnType<typeof useSOSStore>["stage"];
@@ -9,8 +10,11 @@ export function useSOS(): {
   beginHold: () => void;
   cancel: () => void;
   confirmTrigger: () => Promise<void>;
+  cancelActive: () => void;
+  openFakeCall: () => void;
 } {
-  const { stage, countdownSeconds, setStage, setCountdown, setActiveAlertId } = useSOSStore();
+  const { stage, countdownSeconds, activeAlertId, setStage, setCountdown, setActiveAlertId } =
+    useSOSStore();
   const { requestOnce } = useGeolocation();
   const socket = useSocket();
 
@@ -61,8 +65,32 @@ export function useSOS(): {
     if ("vibrate" in navigator) navigator.vibrate([100, 50, 100]);
 
     socket.emit("sos:trigger", { userId: "demo-user", lat: pos.lat, lng: pos.lng });
-    setActiveAlertId("local-demo-alert");
+    await api.post("/sos/trigger", { userId: "demo-user", lat: pos.lat, lng: pos.lng });
   }, [requestOnce, setActiveAlertId, setStage, socket]);
+
+  const cancelActive = useCallback(() => {
+    if (activeAlertId) {
+      socket.emit("sos:resolve", { alertId: activeAlertId });
+    }
+    setActiveAlertId(undefined);
+    setStage("IDLE");
+  }, [activeAlertId, setActiveAlertId, setStage, socket]);
+
+  const openFakeCall = useCallback(() => {
+    setStage("FAKE_CALL");
+    if ("vibrate" in navigator) navigator.vibrate([200, 80, 200]);
+  }, [setStage]);
+
+  useEffect(() => {
+    const handleActive = (payload: { alertId: string }) => {
+      setActiveAlertId(payload.alertId);
+      setStage("ACTIVE");
+    };
+    socket.on("sos:active", handleActive);
+    return () => {
+      socket.off("sos:active", handleActive);
+    };
+  }, [setActiveAlertId, setStage, socket]);
 
   useEffect(() => {
     return () => {
@@ -71,6 +99,6 @@ export function useSOS(): {
     };
   }, []);
 
-  return { stage, countdownSeconds, beginHold, cancel, confirmTrigger };
+  return { stage, countdownSeconds, beginHold, cancel, confirmTrigger, cancelActive, openFakeCall };
 }
 

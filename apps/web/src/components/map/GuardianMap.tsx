@@ -3,6 +3,7 @@ import L, { type CircleMarker, type Map as LeafletMap } from "leaflet";
 import { useGeolocation } from "../../hooks/useGeolocation";
 import { useMapStore } from "../../store/mapStore";
 import { HeatmapLayer } from "./HeatmapLayer";
+import { IncidentClusterLayer } from "./IncidentClusterLayer";
 import type { Incident } from "../../types/incident";
 import type { HeatmapFeatureCollection } from "../../types/zone";
 
@@ -141,18 +142,19 @@ export function GuardianMap(props: { demo: boolean }): React.ReactElement {
   }, [toggles.liveTracking]);
 
   return (
-    <div className="relative h-full w-full">
+    <div className="absolute inset-0 z-0 h-full w-full">
       <div
         ref={containerRef}
-        className="h-full w-full min-h-full min-w-full"
+        className="guardian-leaflet-map h-full min-h-[400px] w-full min-w-full"
         aria-label="Safety map"
       />
 
       {ready && mapRef.current && (
         <>
           {toggles.heatmap && <HeatmapLayer map={mapRef.current} demoData={demoZones ?? undefined} />}
+          {toggles.incidents && <IncidentClusterLayer map={mapRef.current} />}
 
-          <div className="pointer-events-none absolute bottom-4 right-4 z-[500] rounded-lg border border-guardian-border-subtle bg-guardian-bg-surface/95 p-3 text-xs text-guardian-text-secondary shadow-lg backdrop-blur">
+          <div className="pointer-events-none absolute bottom-4 right-4 z-20 rounded-lg border border-guardian-border-subtle bg-guardian-bg-surface/95 p-3 text-xs text-guardian-text-secondary shadow-lg backdrop-blur">
             <div className="text-[11px] font-mono tracking-widest text-guardian-text-primary">
               RISK LEGEND
             </div>

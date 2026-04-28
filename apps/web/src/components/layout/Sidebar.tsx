@@ -15,7 +15,7 @@ const NAV: NavItem[] = [
 export function Sidebar(): React.ReactElement {
   const location = useLocation();
   return (
-    <aside className="flex h-full w-16 flex-col items-center justify-between border-r border-guardian-border-subtle bg-guardian-bg-void py-4">
+    <aside className="relative z-30 flex h-full w-16 flex-col items-center justify-between border-r border-guardian-border-subtle bg-guardian-bg-void py-4">
       <div className="flex flex-col items-center gap-3">
         <div className="h-9 w-9 rounded-full border border-guardian-border-default bg-guardian-bg-surface" />
         <nav className="mt-3 flex flex-col gap-2">

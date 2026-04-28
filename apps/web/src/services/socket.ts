@@ -3,7 +3,11 @@ import { io, type Socket } from "socket.io-client";
 export type GuardianSocket = Socket;
 
 function socketUrl(): string {
-  return (import.meta.env.VITE_SOCKET_URL as string | undefined) ?? "http://localhost:3001";
+  return (
+    (import.meta.env.NEXT_PUBLIC_WS_URL as string | undefined) ??
+    (import.meta.env.VITE_SOCKET_URL as string | undefined) ??
+    "http://localhost:4000"
+  );
 }
 
 export function createSocket(): GuardianSocket {

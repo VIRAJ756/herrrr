@@ -16,42 +16,41 @@ GUARDIAN is a dark, intelligence-first safety platform with:
 ```
 ┌──────────────────────────┐     WebSocket     ┌──────────────────────────┐
 │  React + Vite (web)       │◀────────────────▶│ Node + Express (api)      │
-│  Map UI + SOS + Journey   │                  │ REST + Socket.io          │
+│  Leaflet UI + SOS + Journey│                 │ REST + Socket.io          │
 │  React Query + Zustand    │──────REST───────▶│ Zod validation            │
 └─────────────┬────────────┘                  └─────────────┬────────────┘
               │                                              │
               │                                              │ Prisma
               │                                              ▼
               │                                      ┌───────────────────┐
-              │                                      │ Postgres (Supabase)│
+              │                                      │ SQLite (temp)      │
               │                                      └───────────────────┘
               │
-              ├──────────────▶ Supabase Auth / Storage
-              ├──────────────▶ OpenAI (risk analysis)
-              └──────────────▶ Twilio (SMS alerts)
+              ├──────────────▶ Browser Geolocation
+              ├──────────────▶ Heuristic AI Risk Layer
+              └──────────────▶ Twilio/Web Push hooks
 ```
 
 ## Feature checklist
-- ✓ Auth gate + Supabase client wiring
-- ✓ Dashboard shell (map-first mission-control UI)
-- ✓ Risk zone heatmap endpoint + map overlay
-- ✓ SOS trigger + realtime broadcast to contacts
-- ✓ Journey tracking pings + zone entry alerts
-- ⭐ AI risk analysis (GPT-4o mini)
-- ⭐ Safe route overlay (Google Routes API)
-- ⭐ Voice activation + fake call escape
+- ✓ Leaflet dashboard shell with realtime heatmap circles
+- ✓ Incident reporting + community feed
+- ✓ Dynamic risk engine + `/api/zones/heatmap`
+- ✓ SOS trigger + active emergency UI
+- ✓ Journey lifecycle + public tracking page
+- ✓ Contacts CRUD + test alert flow
+- ✓ AI risk analysis panel
+- ✓ Safe route estimate on journey setup
+- ✓ Voice activation + fake call escape
 
 ## Tech stack (locked)
 - **Frontend**: React 18 + TypeScript + Vite, Tailwind v3, shadcn/ui
-- **Map**: Mapbox GL JS (fallback supported)
+- **Map**: Leaflet + OpenStreetMap
 - **State**: Zustand + React Query v5
 - **Realtime**: Socket.io (client + server)
 - **Backend**: Node.js + Express + TypeScript
-- **DB**: PostgreSQL (Supabase) + Prisma
-- **Auth**: Supabase Auth
-- **Storage**: Supabase Storage (incident media)
-- **Notifications**: Web Push + Twilio SMS
-- **AI**: OpenAI GPT-4o mini + Google Maps Routes API
+- **DB**: SQLite (temporary) + Prisma
+- **Notifications**: Socket events now, Twilio/Web Push ready to extend
+- **AI**: Heuristic local AI layer with cached risk summaries + safe route estimation
 
 ## Local setup (under 5 commands)
 1) Copy env:
@@ -85,9 +84,17 @@ Open the web app with `?demo=true` to seed fake incidents + run a simulated jour
 
 ## API quick reference
 - `GET /api/health`
-- `GET /api/zones/heatmap`
+- `GET /api/incidents`
 - `POST /api/incidents`
-- `GET /api/incidents?near=lat,lng`
+- `GET /api/zones/heatmap`
+- `POST /api/journey/start`
+- `POST /api/journey/complete`
+- `GET /api/journey/active`
+- `GET /api/journey/track/:token`
+- `GET /api/contacts`
+- `POST /api/contacts`
+- `DELETE /api/contacts/:id`
+- `POST /api/contacts/:id/test-alert`
 - `POST /api/ai/risk-analysis`
 - `POST /api/ai/safe-route`
 
@@ -98,4 +105,3 @@ Open the web app with `?demo=true` to seed fake incidents + run a simulated jour
 ## Team
 - (name)
 - (name)
-

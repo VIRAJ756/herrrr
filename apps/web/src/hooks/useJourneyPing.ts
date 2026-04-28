@@ -1,25 +1,17 @@
 import { useEffect, useRef } from "react";
 import { useGeolocation } from "./useGeolocation";
 import { useSocket } from "./useSocket";
-
-function getJourneyId(): string {
-  const key = "guardian-active-journey-id";
-  const existing = window.localStorage.getItem(key);
-  if (existing) return existing;
-  const generated = window.crypto?.randomUUID?.() ?? `journey-${Date.now()}`;
-  window.localStorage.setItem(key, generated);
-  return generated;
-}
+import { useJourneyStore } from "../store/journeyStore";
 
 export function useJourneyPing(enabled: boolean): { journeyId: string | null } {
   const socket = useSocket();
   const { point } = useGeolocation();
+  const activeJourney = useJourneyStore((state) => state.activeJourney);
   const journeyIdRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!enabled || typeof window === "undefined") return;
-    journeyIdRef.current = getJourneyId();
-  }, [enabled]);
+    journeyIdRef.current = enabled ? activeJourney?.id ?? null : null;
+  }, [activeJourney?.id, enabled]);
 
   useEffect(() => {
     if (!enabled || !point || !journeyIdRef.current) return;

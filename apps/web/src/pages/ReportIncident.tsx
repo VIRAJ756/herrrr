@@ -1,4 +1,10 @@
 import React, { useMemo, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import { api } from "../services/api";
+import { useGeolocation } from "../hooks/useGeolocation";
+import { MobileNav } from "../components/layout/MobileNav";
+import { DemoBanner } from "../components/layout/DemoBanner";
 import type { IncidentType } from "../types/incident";
 
 const TYPES: { type: IncidentType; label: string }[] = [
@@ -32,10 +38,14 @@ function Pill(props: {
 }
 
 export default function ReportIncident(): React.ReactElement {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { point, requestOnce, isSupported, error: geoError } = useGeolocation();
   const [type, setType] = useState<IncidentType>("HARASSMENT");
   const [severity, setSeverity] = useState(3);
   const [anon, setAnon] = useState(true);
   const [desc, setDesc] = useState("");
+  const [locationLabel, setLocationLabel] = useState("Waiting for current location…");
 
   const severityLabel = useMemo(() => {
     if (severity >= 5) return "CRITICAL";
@@ -45,8 +55,47 @@ export default function ReportIncident(): React.ReactElement {
     return "MINOR";
   }, [severity]);
 
+  const submitMutation = useMutation({
+    mutationFn: async () => {
+      const currentPoint = point ?? (await requestOnce());
+      const response = await api.post("/incidents", {
+        latitude: currentPoint.lat,
+        longitude: currentPoint.lng,
+        type,
+        description: desc.trim() || undefined,
+        mediaUrls: [],
+        severity,
+        isAnonymous: anon,
+      });
+      return response.data;
+    },
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["incidents"] }),
+        queryClient.invalidateQueries({ queryKey: ["zones", "heatmap"] }),
+      ]);
+      setDesc("");
+      setSeverity(3);
+      setAnon(true);
+      setType("HARASSMENT");
+      navigate("/feed");
+    },
+  });
+
+  async function handleUseCurrentLocation(): Promise<void> {
+    try {
+      const currentPoint = point ?? (await requestOnce());
+      setLocationLabel(
+        `Pinned ${currentPoint.lat.toFixed(4)}, ${currentPoint.lng.toFixed(4)}`,
+      );
+    } catch (error) {
+      setLocationLabel(error instanceof Error ? error.message : "Unable to fetch location.");
+    }
+  }
+
   return (
-    <main className="min-h-screen bg-guardian-bg-base text-guardian-text-primary">
+    <main className="min-h-screen bg-guardian-bg-base pb-16 text-guardian-text-primary">
+      <DemoBanner />
       <div className="mx-auto max-w-xl px-6 py-10">
         <div className="text-xs font-mono tracking-widest text-guardian-text-secondary">
           NEW FIELD REPORT
@@ -76,6 +125,26 @@ export default function ReportIncident(): React.ReactElement {
             onChange={(e) => setSeverity(Number(e.target.value))}
             aria-label="Severity"
           />
+
+          <div className="mt-6 text-[11px] font-mono tracking-widest text-guardian-text-secondary">
+            LOCATION
+          </div>
+          <div className="mt-3 rounded-md border border-guardian-border-subtle bg-guardian-bg-elevated/30 p-3">
+            <button
+              type="button"
+              className="rounded-md border border-guardian-border-default bg-guardian-bg-surface px-3 py-2 text-xs font-mono text-guardian-signal-safe focus:outline-none focus:ring-2 focus:ring-guardian-border-accent disabled:cursor-not-allowed disabled:opacity-50"
+              onClick={() => void handleUseCurrentLocation()}
+              disabled={!isSupported}
+            >
+              📍 USE CURRENT LOCATION
+            </button>
+            <div className="mt-2 text-sm text-guardian-text-secondary">
+              {locationLabel}
+            </div>
+            {geoError ? (
+              <div className="mt-1 text-xs text-guardian-signal-danger">{geoError}</div>
+            ) : null}
+          </div>
 
           <div className="mt-6 text-[11px] font-mono tracking-widest text-guardian-text-secondary">
             DESCRIPTION (OPTIONAL)
@@ -108,17 +177,22 @@ export default function ReportIncident(): React.ReactElement {
 
           <button
             type="button"
-            className="mt-6 w-full rounded-md bg-guardian-signal-safe px-4 py-3 text-sm font-semibold text-guardian-text-inverse shadow-[var(--g-glow-safe)] focus:outline-none focus:ring-2 focus:ring-guardian-signal-safe/60"
-            onClick={() => {
-              void desc;
-              void anon;
-              alert("Report submission will be wired to /api/incidents next (Phase 3).");
-            }}
+            className="mt-6 w-full rounded-md bg-guardian-signal-safe px-4 py-3 text-sm font-semibold text-guardian-text-inverse shadow-[var(--g-glow-safe)] focus:outline-none focus:ring-2 focus:ring-guardian-signal-safe/60 disabled:cursor-not-allowed disabled:opacity-60"
+            onClick={() => submitMutation.mutate()}
+            disabled={submitMutation.isPending}
           >
-            SUBMIT REPORT →
+            {submitMutation.isPending ? "SUBMITTING…" : "SUBMIT REPORT →"}
           </button>
+          {submitMutation.isError ? (
+            <div className="mt-3 text-sm text-guardian-signal-danger">
+              {submitMutation.error instanceof Error
+                ? submitMutation.error.message
+                : "Failed to submit report."}
+            </div>
+          ) : null}
         </section>
       </div>
+      <MobileNav />
     </main>
   );
 }

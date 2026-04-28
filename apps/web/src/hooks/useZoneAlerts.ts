@@ -16,6 +16,7 @@ export function useZoneAlerts(): {
   const { point } = useGeolocation();
   const [alert, setAlert] = useState<ZoneAlertViewModel | null>(null);
   const seen = useRef<Set<string>>(new Set());
+  const askedNotificationPermission = useRef(false);
 
   useEffect(() => {
     const handleZoneAlert = (payload: ZoneAlertPayload): void => {
@@ -39,6 +40,14 @@ export function useZoneAlerts(): {
         id,
         distanceMeters,
       });
+
+      if (typeof window !== "undefined" && "Notification" in window) {
+        if (Notification.permission === "granted") {
+          new Notification("WARNING: You are entering a high-risk area", {
+            body: `Risk score ${(payload.riskScore * 100).toFixed(0)}%`,
+          });
+        }
+      }
     };
 
     socket.on("zone:alert", handleZoneAlert);
@@ -46,6 +55,25 @@ export function useZoneAlerts(): {
       socket.off("zone:alert", handleZoneAlert);
     };
   }, [point, socket]);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !("Notification" in window)) return;
+    if (askedNotificationPermission.current) return;
+    if (Notification.permission !== "default") return;
+    const request = () => {
+      askedNotificationPermission.current = true;
+      void Notification.requestPermission();
+      window.removeEventListener("click", request);
+    };
+    window.addEventListener("click", request, { once: true });
+    return () => window.removeEventListener("click", request);
+  }, []);
+
+  useEffect(() => {
+    if (!alert) return;
+    const timer = window.setTimeout(() => setAlert(null), 10_000);
+    return () => window.clearTimeout(timer);
+  }, [alert]);
 
   return {
     alert,

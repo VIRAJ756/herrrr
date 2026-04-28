@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import { useSOS } from "../../hooks/useSOS";
 import { SOSCountdown } from "./SOSCountdown";
 import { SOSActivePanel } from "./SOSActivePanel";
+import { FakeCallScreen } from "./FakeCallScreen";
 
 export function SOSButton(): React.ReactElement {
   const { stage, beginHold, cancel } = useSOS();
@@ -19,6 +20,7 @@ export function SOSButton(): React.ReactElement {
 
   if (stage === "COUNTDOWN") return <SOSCountdown />;
   if (stage === "ACTIVE") return <SOSActivePanel />;
+  if (stage === "FAKE_CALL") return <FakeCallScreen />;
 
   return (
     <button

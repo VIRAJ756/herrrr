@@ -1,19 +1,33 @@
 import React, { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "../../services/api";
 import { useSOSStore } from "../../store/sosStore";
+import { useSOS } from "../../hooks/useSOS";
+import type { Contact } from "../../types/contact";
 
 type ContactNotifyState = { name: string; status: "SENDING" | "NOTIFIED" };
 
+async function fetchContacts(): Promise<Contact[]> {
+  const response = await api.get<Contact[]>("/contacts");
+  return response.data;
+}
+
 export function SOSActivePanel(): React.ReactElement {
   const { setStage } = useSOSStore();
+  const { cancelActive, openFakeCall } = useSOS();
   const [confirmCancel, setConfirmCancel] = useState(false);
+  const contactsQuery = useQuery({
+    queryKey: ["contacts"],
+    queryFn: fetchContacts,
+  });
 
   const contacts = useMemo<ContactNotifyState[]>(
-    () => [
-      { name: "Asha (Family)", status: "NOTIFIED" },
-      { name: "Riya (Friend)", status: "SENDING" },
-      { name: "Karthik (Colleague)", status: "SENDING" },
-    ],
-    [],
+    () =>
+      (contactsQuery.data ?? []).map((contact, index) => ({
+        name: `${contact.name} (${contact.relation})`,
+        status: index === 0 ? "NOTIFIED" : "SENDING",
+      })),
+    [contactsQuery.data],
   );
 
   return (
@@ -59,6 +73,13 @@ export function SOSActivePanel(): React.ReactElement {
           >
             RECORD AUDIO
           </button>
+          <button
+            type="button"
+            className="w-full rounded-md bg-guardian-bg-surface px-4 py-3 text-sm font-mono text-guardian-text-primary border border-guardian-border-default focus:outline-none focus:ring-2 focus:ring-guardian-border-accent"
+            onClick={openFakeCall}
+          >
+            FAKE CALL ESCAPE
+          </button>
 
           <button
             type="button"
@@ -68,7 +89,7 @@ export function SOSActivePanel(): React.ReactElement {
                 setConfirmCancel(true);
                 return;
               }
-              setStage("IDLE");
+              cancelActive();
             }}
           >
             {confirmCancel ? "TAP AGAIN TO CONFIRM I'M SAFE" : "I'M SAFE — CANCEL"}

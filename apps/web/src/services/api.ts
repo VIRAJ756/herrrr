@@ -2,7 +2,11 @@ import axios, { type AxiosInstance } from "axios";
 import { supabase } from "./supabase";
 
 function getBaseUrl(): string {
-  return (import.meta.env.VITE_API_URL as string | undefined) ?? "http://localhost:3001";
+  return (
+    (import.meta.env.NEXT_PUBLIC_API_URL as string | undefined) ??
+    (import.meta.env.VITE_API_URL as string | undefined) ??
+    "http://localhost:4000"
+  );
 }
 
 export const api: AxiosInstance = axios.create({
@@ -20,4 +24,18 @@ api.interceptors.request.use(async (config) => {
   }
   return config;
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // eslint-disable-next-line no-console
+    console.error("API request failed", {
+      url: error?.config?.url,
+      method: error?.config?.method,
+      status: error?.response?.status,
+      message: error?.message,
+    });
+    return Promise.reject(error);
+  },
+);
 

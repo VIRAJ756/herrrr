@@ -6,18 +6,19 @@ dotenv.config();
 
 const EnvSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
-  PORT: z.coerce.number().int().positive().default(3001),
+  PORT: z.coerce.number().int().positive().default(4000),
 
   DATABASE_URL: z.string().min(1),
 
   // Supabase (server)
-  VITE_SUPABASE_URL: z.string().url(),
-  SUPABASE_SERVICE_KEY: z.string().min(1),
+  VITE_SUPABASE_URL: z.string().url().optional(),
+  SUPABASE_SERVICE_KEY: z.string().min(1).optional(),
 
   // Twilio (optional for local demo)
   TWILIO_ACCOUNT_SID: z.string().min(1).optional(),
   TWILIO_AUTH_TOKEN: z.string().min(1).optional(),
   TWILIO_PHONE_NUMBER: z.string().min(1).optional(),
+  TWILIO_FROM_NUMBER: z.string().min(1).optional(),
 
   // OpenAI (optional until Phase 6)
   OPENAI_API_KEY: z.string().min(1).optional()

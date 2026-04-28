@@ -1,5 +1,6 @@
 import React, { Suspense, lazy } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { isLoggedIn, setDemoMode } from "./services/auth";
 
 const Landing = lazy(() => import("./pages/Landing"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -8,6 +9,8 @@ const JourneyShare = lazy(() => import("./pages/JourneyShare"));
 const Contacts = lazy(() => import("./pages/Contacts"));
 const CommunityFeed = lazy(() => import("./pages/CommunityFeed"));
 const Settings = lazy(() => import("./pages/Settings"));
+const TrackView = lazy(() => import("./pages/TrackView"));
+const Login = lazy(() => import("./pages/Login"));
 
 function LoadingShell(): React.ReactElement {
   return (
@@ -24,18 +27,26 @@ function LoadingShell(): React.ReactElement {
 export default function App(): React.ReactElement {
   const location = useLocation();
   const isDemo = new URLSearchParams(location.search).get("demo") === "true";
+  if (isDemo) setDemoMode(true);
+  const loggedIn = isLoggedIn();
+  const protect = (node: React.ReactElement): React.ReactElement =>
+    loggedIn ? node : <Navigate to="/login" replace />;
 
   return (
     <Suspense fallback={<LoadingShell />}>
       <Routes>
-        <Route path="/" element={<Landing demo={isDemo} />} />
-        <Route path="/dashboard" element={<Dashboard demo={isDemo} />} />
-        <Route path="/report" element={<ReportIncident />} />
-        <Route path="/journey" element={<JourneyShare demo={isDemo} />} />
-        <Route path="/contacts" element={<Contacts />} />
-        <Route path="/feed" element={<CommunityFeed />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/" element={<Navigate to={loggedIn ? "/dashboard" : "/login"} replace />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/landing" element={<Landing demo={isDemo} />} />
+        <Route path="/dashboard" element={protect(<Dashboard demo={isDemo} />)} />
+        <Route path="/report" element={protect(<ReportIncident />)} />
+        <Route path="/incidents" element={protect(<ReportIncident />)} />
+        <Route path="/journey" element={protect(<JourneyShare />)} />
+        <Route path="/contacts" element={protect(<Contacts />)} />
+        <Route path="/feed" element={protect(<CommunityFeed />)} />
+        <Route path="/settings" element={protect(<Settings />)} />
+        <Route path="/track/:token" element={<TrackView />} />
+        <Route path="*" element={<Navigate to={loggedIn ? "/dashboard" : "/login"} replace />} />
       </Routes>
     </Suspense>
   );

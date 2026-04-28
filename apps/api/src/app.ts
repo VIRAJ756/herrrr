@@ -19,7 +19,7 @@ export function createApp(env: Env): express.Express {
   app.use(helmet());
   app.use(
     cors({
-      origin: true,
+      origin: ["http://localhost:3000", "http://localhost:3001"],
       credentials: true,
     }),
   );
@@ -37,6 +37,10 @@ export function createApp(env: Env): express.Express {
   app.use("/api/journey", journeyRouter());
   app.use("/api/contacts", contactsRouter());
   app.use("/api/ai", aiRouter());
+
+  app.use((_req, res) => {
+    res.status(404).json({ error: { code: "NOT_FOUND", message: "Route not found." } });
+  });
 
   app.use(errorHandler);
   return app;

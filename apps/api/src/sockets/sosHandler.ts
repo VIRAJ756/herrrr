@@ -2,6 +2,7 @@ import type { Server as SocketIOServer, Socket } from "socket.io";
 import { z } from "zod";
 import type { Env } from "../config/env";
 import { prisma } from "../prisma/client";
+import { sendSosSmsNotifications } from "../services/notifier";
 
 const TriggerSchema = z.object({
   userId: z.string().min(1),
@@ -28,6 +29,13 @@ export function sosHandler(io: SocketIOServer, socket: Socket, _env: Env): void 
 
     socket.emit("sos:active", { alertId: alert.id });
     io.emit("sos:broadcast", alert);
+
+    await sendSosSmsNotifications({
+      env: _env,
+      userId: parsed.data.userId,
+      lat: parsed.data.lat,
+      lng: parsed.data.lng,
+    });
   });
 
   socket.on("sos:cancel", async (payload) => {
