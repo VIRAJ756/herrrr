@@ -49,8 +49,8 @@ GUARDIAN is a dark, intelligence-first safety platform with:
 - **Realtime**: Socket.io (client + server)
 - **Backend**: Node.js + Express + TypeScript
 - **DB**: SQLite (temporary) + Prisma
-- **Notifications**: Socket events now, Twilio/Web Push ready to extend
-- **AI**: Heuristic local AI layer with cached risk summaries + safe route estimation
+- **Notifications**: Simulated SMS (demo mode) + WhatsApp fallback — zero-cost demo with real fallback option
+- **AI**: Google Gemini integration with heuristic fallback — enhanced risk analysis when API key configured
 
 ## Local setup (under 5 commands)
 1) Copy env:

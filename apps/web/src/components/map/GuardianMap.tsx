@@ -68,7 +68,7 @@ function demoHeatmap(incidents: Incident[]): HeatmapFeatureCollection {
   };
 }
 
-export function GuardianMap(props: { demo: boolean }): React.ReactElement {
+export function GuardianMap(props: { demo: boolean; userLat?: number; userLng?: number }): React.ReactElement {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<LeafletMap | null>(null);
   const liveMarkerRef = useRef<CircleMarker | null>(null);
@@ -83,13 +83,16 @@ export function GuardianMap(props: { demo: boolean }): React.ReactElement {
   useEffect(() => {
     if (!containerRef.current) return;
 
+    const initialLat = props.userLat ?? BENGALURU.lat;
+    const initialLng = props.userLng ?? BENGALURU.lng;
+
     const map = L.map(containerRef.current, {
       zoomControl: true,
       attributionControl: true,
-    }).setView([BENGALURU.lat, BENGALURU.lng], 13);
+    }).setView([initialLat, initialLng], 13);
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "&copy; OpenStreetMap contributors",
+    L.tileLayer("https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png", {
+      attribution: "&copy; Stadia Maps",
       maxZoom: 19,
     }).addTo(map);
 

@@ -33,10 +33,10 @@ export function createApp(env: Env): express.Express {
   app.use("/api/auth", authRouter());
   app.use("/api/incidents", incidentsRouter());
   app.use("/api/zones", zonesRouter());
-  app.use("/api/sos", sosRouter());
+  app.use("/api/sos", sosRouter(env));
   app.use("/api/journey", journeyRouter());
   app.use("/api/contacts", contactsRouter());
-  app.use("/api/ai", aiRouter());
+  app.use("/api/ai", aiRouter(env));
 
   app.use((_req, res) => {
     res.status(404).json({ error: { code: "NOT_FOUND", message: "Route not found." } });

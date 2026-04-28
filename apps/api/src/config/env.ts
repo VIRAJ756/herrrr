@@ -14,14 +14,8 @@ const EnvSchema = z.object({
   VITE_SUPABASE_URL: z.string().url().optional(),
   SUPABASE_SERVICE_KEY: z.string().min(1).optional(),
 
-  // Twilio (optional for local demo)
-  TWILIO_ACCOUNT_SID: z.string().min(1).optional(),
-  TWILIO_AUTH_TOKEN: z.string().min(1).optional(),
-  TWILIO_PHONE_NUMBER: z.string().min(1).optional(),
-  TWILIO_FROM_NUMBER: z.string().min(1).optional(),
-
-  // OpenAI (optional until Phase 6)
-  OPENAI_API_KEY: z.string().min(1).optional()
+  // Google Gemini AI
+  GEMINI_API_KEY: z.string().min(1).optional()
 });
 
 export type Env = z.infer<typeof EnvSchema>;

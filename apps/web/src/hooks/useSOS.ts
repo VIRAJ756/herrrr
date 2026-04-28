@@ -1,11 +1,19 @@
 import { useCallback, useEffect, useRef } from "react";
-import { useSOSStore } from "../store/sosStore";
+import { useSOSStore, type SOSStage } from "../store/sosStore";
 import { useGeolocation } from "./useGeolocation";
 import { useSocket } from "./useSocket";
 import { api } from "../services/api";
 
-export function useSOS(): {
-  stage: ReturnType<typeof useSOSStore>["stage"];
+interface SmsResult {
+  success: boolean;
+  sent: number;
+  failed: number;
+  mode: "simulated" | "gateway";
+  message: string;
+}
+
+export function useSOS(onToast?: (title: string, description: string, variant: "success" | "destructive", mode?: "simulated" | "gateway") => void): {
+  stage: SOSStage;
   countdownSeconds: number;
   beginHold: () => void;
   cancel: () => void;
@@ -23,11 +31,9 @@ export function useSOS(): {
 
   const beginHold = useCallback(() => {
     if (stage !== "IDLE") return;
-    holdTimer.current = window.setTimeout(() => {
-      setStage("COUNTDOWN");
-      setCountdown(3);
-      if ("vibrate" in navigator) navigator.vibrate(50);
-    }, 1500);
+    setStage("COUNTDOWN");
+    setCountdown(5);
+    if ("vibrate" in navigator) navigator.vibrate(50);
   }, [setCountdown, setStage, stage]);
 
   const cancel = useCallback(() => {
@@ -36,7 +42,7 @@ export function useSOS(): {
     holdTimer.current = null;
     countdownTimer.current = null;
     setStage("IDLE");
-    setCountdown(3);
+    setCountdown(5);
   }, [setCountdown, setStage]);
 
   useEffect(() => {
@@ -61,12 +67,18 @@ export function useSOS(): {
 
   const confirmTrigger = useCallback(async () => {
     const pos = await requestOnce();
-    setStage("ACTIVE");
+    setStage("SENT");
     if ("vibrate" in navigator) navigator.vibrate([100, 50, 100]);
 
+    // Keep socket logic for backend integration
     socket.emit("sos:trigger", { userId: "demo-user", lat: pos.lat, lng: pos.lng });
-    await api.post("/sos/trigger", { userId: "demo-user", lat: pos.lat, lng: pos.lng });
-  }, [requestOnce, setActiveAlertId, setStage, socket]);
+    
+    try {
+      await api.post("/sos/trigger", { userId: "demo-user", lat: pos.lat, lng: pos.lng });
+    } catch {
+      // Silent error - UI-only flow
+    }
+  }, [requestOnce, setStage, socket]);
 
   const cancelActive = useCallback(() => {
     if (activeAlertId) {
@@ -86,11 +98,28 @@ export function useSOS(): {
       setActiveAlertId(payload.alertId);
       setStage("ACTIVE");
     };
+    
+    const handleSmsResult = (data: SmsResult) => {
+      if (data.success && data.sent > 0) {
+        const desc = data.mode === "simulated" 
+          ? `${data.message} (${data.sent} contacts - Simulated)` 
+          : `${data.message} (${data.sent} contacts)`;
+        onToast?.("SOS Sent 🚨", desc, "success", data.mode);
+      } else if (!data.success) {
+        onToast?.("SMS Failed ❌", data.message || "Could not send alerts. Please try again.", "destructive", data.mode);
+      } else if (data.sent === 0 && data.failed === 0) {
+        onToast?.("No Contacts ⚠️", data.message || "Add emergency contacts in settings to enable SMS alerts.", "destructive", data.mode);
+      }
+    };
+    
     socket.on("sos:active", handleActive);
+    socket.on("sos:sms-result", handleSmsResult);
+    
     return () => {
       socket.off("sos:active", handleActive);
+      socket.off("sos:sms-result", handleSmsResult);
     };
-  }, [setActiveAlertId, setStage, socket]);
+  }, [setActiveAlertId, setStage, socket, onToast]);
 
   useEffect(() => {
     return () => {

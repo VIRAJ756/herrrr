@@ -8,6 +8,7 @@ const ReportIncident = lazy(() => import("./pages/ReportIncident"));
 const JourneyShare = lazy(() => import("./pages/JourneyShare"));
 const Contacts = lazy(() => import("./pages/Contacts"));
 const CommunityFeed = lazy(() => import("./pages/CommunityFeed"));
+const NearbyHelp = lazy(() => import("./pages/NearbyHelp"));
 const Settings = lazy(() => import("./pages/Settings"));
 const TrackView = lazy(() => import("./pages/TrackView"));
 const Login = lazy(() => import("./pages/Login"));
@@ -44,6 +45,7 @@ export default function App(): React.ReactElement {
         <Route path="/journey" element={protect(<JourneyShare />)} />
         <Route path="/contacts" element={protect(<Contacts />)} />
         <Route path="/feed" element={protect(<CommunityFeed />)} />
+        <Route path="/nearby-help" element={protect(<NearbyHelp />)} />
         <Route path="/settings" element={protect(<Settings />)} />
         <Route path="/track/:token" element={<TrackView />} />
         <Route path="*" element={<Navigate to={loggedIn ? "/dashboard" : "/login"} replace />} />

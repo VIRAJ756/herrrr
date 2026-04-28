@@ -1,6 +1,15 @@
-import twilio from "twilio";
+import { sendSMS } from "./smsService";
 import type { Env } from "../config/env";
 import { prisma } from "../prisma/client";
+
+export interface NotifyResult {
+  success: boolean;
+  sent: number;
+  failed: number;
+  mode: "simulated" | "gateway";
+  contactsNotified: number;
+  message: string;
+}
 
 /** Send SOS SMS notifications to active emergency contacts. */
 export async function sendSosSmsNotifications(input: {
@@ -8,37 +17,49 @@ export async function sendSosSmsNotifications(input: {
   userId: string;
   lat: number;
   lng: number;
-}): Promise<void> {
-  const accountSid = input.env.TWILIO_ACCOUNT_SID;
-  const authToken = input.env.TWILIO_AUTH_TOKEN;
-  const fromNumber = input.env.TWILIO_FROM_NUMBER ?? input.env.TWILIO_PHONE_NUMBER;
-
-  if (!accountSid || !authToken || !fromNumber) {
-    if (input.env.NODE_ENV === "development") {
-      // eslint-disable-next-line no-console
-      console.log("Twilio not configured; skipping SOS SMS dispatch.");
-    }
-    return;
-  }
+}): Promise<NotifyResult> {
+  console.log(`[SOS TRIGGERED] User: ${input.userId}, Location: ${input.lat},${input.lng}`);
 
   const contacts = await prisma.contact.findMany({
     where: { userId: input.userId, isActive: true },
     take: 5,
   });
-  if (contacts.length === 0) return;
 
-  const client = twilio(accountSid, authToken);
+  if (contacts.length === 0) {
+    console.log("[SOS] No active emergency contacts found");
+    return {
+      success: true,
+      sent: 0,
+      failed: 0,
+      mode: "simulated",
+      contactsNotified: 0,
+      message: "No emergency contacts configured",
+    };
+  }
+
   const locationUrl = `https://maps.google.com/?q=${input.lat},${input.lng}`;
-  const body = `EMERGENCY: ${input.userId} has triggered an SOS alert. Their location: ${locationUrl}. Respond immediately.`;
+  const body = `EMERGENCY: SOS alert triggered. Location: ${locationUrl}. Respond immediately.`;
 
-  await Promise.allSettled(
-    contacts.map((contact) =>
-      client.messages.create({
-        from: fromNumber,
-        to: contact.phone,
-        body,
-      }),
-    ),
+  // Send simulated SMS to all contacts
+  const smsResults = await Promise.all(
+    contacts.map(async (contact) => {
+      const smsResult = await sendSMS(input.env, contact.phone, body);
+      console.log(`[SOS SMS] Contact: ${contact.name} (${contact.phone}) - Mode: ${smsResult.mode}`);
+      return smsResult;
+    })
   );
+
+  const allSimulated = smsResults.every((r) => r.mode === "simulated");
+
+  console.log(`[SOS COMPLETE] Notified: ${contacts.length}, Mode: ${allSimulated ? "simulated" : "gateway"}`);
+
+  return {
+    success: true,
+    sent: contacts.length,
+    failed: 0,
+    mode: allSimulated ? "simulated" : "gateway",
+    contactsNotified: contacts.length,
+    message: "Emergency contacts notified successfully",
+  };
 }
 

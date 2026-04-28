@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type SOSStage = "IDLE" | "COUNTDOWN" | "ACTIVE" | "FAKE_CALL";
+export type SOSStage = "IDLE" | "COUNTDOWN" | "SENT" | "ACTIVE" | "FAKE_CALL";
 
 type SOSState = {
   stage: SOSStage;
@@ -15,7 +15,7 @@ type SOSState = {
 
 export const useSOSStore = create<SOSState>((set) => ({
   stage: "IDLE",
-  countdownSeconds: 3,
+  countdownSeconds: 5,
   activeAlertId: undefined,
   fakeCallerName: "Priya",
   setStage: (stage) => set({ stage }),

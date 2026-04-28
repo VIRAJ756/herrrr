@@ -30,11 +30,21 @@ export function sosHandler(io: SocketIOServer, socket: Socket, _env: Env): void 
     socket.emit("sos:active", { alertId: alert.id });
     io.emit("sos:broadcast", alert);
 
-    await sendSosSmsNotifications({
+    // Send SMS notifications and emit results
+    const smsResult = await sendSosSmsNotifications({
       env: _env,
       userId: parsed.data.userId,
       lat: parsed.data.lat,
       lng: parsed.data.lng,
+    });
+
+    // Emit unified result with mode indicator
+    socket.emit("sos:sms-result", {
+      success: smsResult.success,
+      sent: smsResult.sent,
+      failed: smsResult.failed,
+      mode: smsResult.mode,
+      message: smsResult.message,
     });
   });
 

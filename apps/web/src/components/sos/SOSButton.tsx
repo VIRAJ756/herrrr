@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import { useSOS } from "../../hooks/useSOS";
 import { SOSCountdown } from "./SOSCountdown";
+import { SOSSent } from "./SOSSent";
 import { SOSActivePanel } from "./SOSActivePanel";
 import { FakeCallScreen } from "./FakeCallScreen";
 
@@ -19,20 +20,23 @@ export function SOSButton(): React.ReactElement {
   );
 
   if (stage === "COUNTDOWN") return <SOSCountdown />;
+  if (stage === "SENT") return <SOSSent />;
   if (stage === "ACTIVE") return <SOSActivePanel />;
   if (stage === "FAKE_CALL") return <FakeCallScreen />;
 
   return (
     <button
       type="button"
-      className="h-[72px] w-[72px] rounded-full bg-guardian-signal-danger text-guardian-text-primary shadow-[var(--g-glow-danger)] animate-pulse-sos focus:outline-none focus:ring-2 focus:ring-guardian-signal-danger/60"
-      aria-label="Emergency SOS — hold for 2 seconds"
+      className="fixed bottom-7 left-7 z-50 h-20 w-20 rounded-full bg-[#FF3B5C] text-white font-mono font-bold text-[18px] focus:outline-none focus:ring-2 focus:ring-[#FF3B5C]/60"
+      aria-label="Emergency SOS — tap to activate"
       role="button"
-      onMouseDown={beginHold}
-      onTouchStart={beginHold}
+      onClick={beginHold}
       onKeyDown={onKeyDown}
+      style={{
+        animation: "sos-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+      }}
     >
-      <span className="font-mono text-lg font-bold">SOS</span>
+      SOS
     </button>
   );
 }

@@ -11,9 +11,11 @@ function ToggleRow(props: {
       type="button"
       className={[
         "flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-xs",
-        "font-mono text-guardian-text-secondary hover:bg-guardian-bg-elevated",
-        "focus:outline-none focus:ring-2 focus:ring-guardian-border-accent",
+        "font-medium transition-colors focus:outline-none",
       ].join(" ")}
+      style={{ 
+        color: "#94A3B8",
+      }}
       role="switch"
       aria-checked={props.value}
       onClick={() => props.onChange(!props.value)}
@@ -21,16 +23,22 @@ function ToggleRow(props: {
       <span>{props.label}</span>
       <span
         className={[
-          "h-4 w-7 rounded-full border border-guardian-border-default p-[2px]",
-          props.value ? "bg-guardian-signal-safe/20" : "bg-guardian-bg-surface",
+          "h-4 w-7 rounded-full border p-[2px] transition-colors",
         ].join(" ")}
+        style={{ 
+          borderColor: props.value ? "#00E5A0" : "rgba(148,163,184,0.15)",
+          backgroundColor: props.value ? "rgba(0, 229, 160, 0.2)" : "#0A0E17",
+        }}
         aria-hidden="true"
       >
         <span
           className={[
             "block h-3 w-3 rounded-full transition-transform",
-            props.value ? "translate-x-3 bg-guardian-signal-safe" : "translate-x-0 bg-guardian-text-muted",
           ].join(" ")}
+          style={{
+            transform: props.value ? "translateX(12px)" : "translateX(0)",
+            backgroundColor: props.value ? "#00E5A0" : "#4B5563",
+          }}
         />
       </span>
     </button>
@@ -40,27 +48,36 @@ function ToggleRow(props: {
 export function LayerControls(): React.ReactElement {
   const { toggles, setToggle } = useMapStore();
   return (
-    <div className="w-44 overflow-hidden rounded-xl border border-guardian-border-subtle bg-guardian-bg-surface/95 backdrop-blur">
-      <div className="border-b border-guardian-border-subtle px-3 py-2 text-[11px] font-mono tracking-widest text-guardian-text-secondary">
-        LAYERS
+    <div 
+      className="w-48 overflow-hidden rounded-lg"
+      style={{ 
+        backgroundColor: "#0F1520",
+        border: "1px solid rgba(148,163,184,0.12)"
+      }}
+    >
+      <div 
+        className="px-3 py-2 text-[10px] font-mono tracking-widest uppercase"
+        style={{ color: "#4B5563" }}
+      >
+        Layers
       </div>
       <ToggleRow
-        label="HEATMAP"
+        label="Heatmap"
         value={toggles.heatmap}
         onChange={(v) => setToggle("heatmap", v)}
       />
       <ToggleRow
-        label="INCIDENTS"
+        label="Incidents"
         value={toggles.incidents}
         onChange={(v) => setToggle("incidents", v)}
       />
       <ToggleRow
-        label="SAFE ROUTE"
+        label="Safe Route"
         value={toggles.safeRoute}
         onChange={(v) => setToggle("safeRoute", v)}
       />
       <ToggleRow
-        label="TRACKING"
+        label="Live Track"
         value={toggles.liveTracking}
         onChange={(v) => setToggle("liveTracking", v)}
       />
