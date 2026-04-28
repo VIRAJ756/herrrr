@@ -82,6 +82,71 @@ export function SOSButton({ contacts = [], userName = "Guardian User" }: SOSButt
     showToast(t("sos.activating") + " — " + t("safe.toast"), "success");
   };
 
+  // Show notification when SOS becomes active
+  useEffect(() => {
+    if (state !== "active") return;
+
+    // Fetch location in background
+    getLocation().then(loc => {
+      setLocation(loc);
+    });
+
+    // Show "Alert SMS Sent" notification after a 600ms delay
+    // (slight delay so it appears after the panel has rendered)
+    const notifTimer = setTimeout(() => {
+      const existing = document.getElementById("guardian-sms-notif");
+      if (existing) existing.remove();
+
+      const el = document.createElement("div");
+      el.id = "guardian-sms-notif";
+      el.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-8px);
+        z-index: 99999;
+        background: #0C1118;
+        border: 1px solid rgba(45, 212, 160, 0.35);
+        border-left: 4px solid #2DD4A0;
+        border-radius: 10px;
+        padding: 13px 20px;
+        font-family: 'Inter', sans-serif;
+        color: #D1D9E6;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+        min-width: 300px;
+        max-width: 380px;
+        animation: sosNotifIn 0.35s ease forwards;
+      `;
+      el.innerHTML = `
+        <div style="font-size: 20px; flex-shrink: 0;">✅</div>
+        <div>
+          <div style="font-size: 13px; font-weight: 600; color: #2DD4A0; margin-bottom: 2px;">
+            Alert SMS Sent
+          </div>
+          <div style="font-size: 11px; color: #7C8FA6;">
+            Emergency contacts have been notified
+          </div>
+        </div>
+      `;
+      document.body.appendChild(el);
+
+      // Auto dismiss after 3.5 seconds
+      setTimeout(() => {
+        if (el && el.parentNode) {
+          el.style.animation = "sosNotifOut 0.3s ease forwards";
+          setTimeout(() => {
+            if (el && el.parentNode) el.remove();
+          }, 300);
+        }
+      }, 3500);
+    }, 600);
+
+    return () => clearTimeout(notifTimer);
+  }, [state]);
+
   const handleImSafe = () => {
     setState("idle");
     setCount(5);
