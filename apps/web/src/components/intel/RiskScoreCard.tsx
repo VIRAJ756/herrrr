@@ -106,13 +106,20 @@ export function RiskScoreCard(props: { demo: boolean }): React.ReactElement {
         type="button"
         onClick={() => setShowAnalysis((value) => !value)}
         className="mt-4 w-full rounded-md px-3 py-2 text-xs font-mono transition-colors focus:outline-none"
-        style={{ 
-          backgroundColor: "#1A2235",
-          color: "#94A3B8",
-          border: "1px solid rgba(148,163,184,0.12)"
+        style={{
+          width: "100%",
+          padding: "10px",
+          background: "rgba(59,130,246,0.1)",
+          border: "1px solid rgba(59,130,246,0.25)",
+          borderRadius: "8px",
+          color: "#3B82F6",
+          fontSize: "13px",
+          fontWeight: "500",
+          cursor: "pointer",
+          letterSpacing: "0.5px"
         }}
       >
-        {showAnalysis ? "▼" : "▶ AI Analysis"}
+        {showAnalysis ? "▼" : "RUN AI ANALYSIS"}
       </button>
       {showAnalysis ? (
         <div 

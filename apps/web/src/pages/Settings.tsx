@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSOSStore } from "../store/sosStore";
+import { useLang } from "../context/LanguageContext";
 import { clearDemoUser, getDemoMode, getDemoUser, setDemoMode } from "../services/auth";
 import { MobileNav } from "../components/layout/MobileNav";
 import { DemoBanner } from "../components/layout/DemoBanner";
 
 export default function Settings(): React.ReactElement {
+  const { t } = useLang();
   const navigate = useNavigate();
   const { fakeCallerName, setFakeCallerName } = useSOSStore();
   const [voiceEnabled, setVoiceEnabled] = useState<boolean>(() => {

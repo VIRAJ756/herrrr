@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "../services/api";
+import { useLang } from "../context/LanguageContext";
 import type { Contact, ContactRelation } from "../types/contact";
 import { MobileNav } from "../components/layout/MobileNav";
 import { DemoBanner } from "../components/layout/DemoBanner";
@@ -11,6 +12,7 @@ async function fetchContacts(): Promise<Contact[]> {
 }
 
 export default function Contacts(): React.ReactElement {
+  const { t } = useLang();
   const queryClient = useQueryClient();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");

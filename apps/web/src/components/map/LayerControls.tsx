@@ -48,14 +48,20 @@ function ToggleRow(props: {
 export function LayerControls(): React.ReactElement {
   const { toggles, setToggle } = useMapStore();
   return (
-    <div 
-      className="w-48 overflow-hidden rounded-lg"
-      style={{ 
+    <div
+      className="overflow-hidden rounded-lg"
+      style={{
+        position: "fixed",
+        left: "208px",
+        top: "72px",
         backgroundColor: "#0F1520",
-        border: "1px solid rgba(148,163,184,0.12)"
+        border: "1px solid rgba(148,163,184,0.1)",
+        borderRadius: "10px",
+        padding: "12px",
+        width: "180px"
       }}
     >
-      <div 
+      <div
         className="px-3 py-2 text-[10px] font-mono tracking-widest uppercase"
         style={{ color: "#4B5563" }}
       >

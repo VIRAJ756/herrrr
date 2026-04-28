@@ -9,11 +9,12 @@ interface ToastContainerProps {
 export function ToastContainer({ toasts, onDismiss }: ToastContainerProps): React.ReactElement | null {
   if (toasts.length === 0) return null;
 
+  // Only show the most recent toast
+  const latestToast = toasts[toasts.length - 1];
+
   return (
-    <div className="fixed top-4 left-1/2 z-[100] -translate-x-1/2 flex flex-col gap-2 w-full max-w-[320px]">
-      {toasts.map((toast) => (
-        <ToastItem key={toast.id} toast={toast} onDismiss={onDismiss} />
-      ))}
+    <div className="fixed left-1/2 z-[100] -translate-x-1/2 w-full max-w-[340px]" style={{ top: "72px" }}>
+      <ToastItem toast={latestToast} onDismiss={onDismiss} />
     </div>
   );
 }
@@ -40,15 +41,17 @@ function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: (id: string)
     return () => clearInterval(timer);
   }, [toast.id, toast.variant, onDismiss]);
 
-  const borderColor = toast.variant === "success" ? "#22C55E" : "#FF3B5C";
-  const icon = toast.variant === "success" ? "✓" : "🚨";
+  const borderColor = toast.variant === "success" ? "#22C55E" : toast.variant === "destructive" ? "#FF3B5C" : "#F59E0B";
+  const icon = toast.variant === "success" ? "✓" : toast.variant === "destructive" ? "✗" : "⚠";
 
   return (
     <div
       className="rounded-lg p-4 animate-[slide-in_300ms_ease-out]"
-      style={{ 
+      style={{
         backgroundColor: "#0F1520",
-        border: `1px solid ${borderColor}`,
+        borderLeft: `4px solid ${borderColor}`,
+        borderRadius: "8px",
+        padding: "14px 16px",
         boxShadow: "none"
       }}
       role="alert"

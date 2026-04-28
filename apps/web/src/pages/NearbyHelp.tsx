@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useGeolocation } from "../hooks/useGeolocation";
+import { useLang } from "../context/LanguageContext";
 
-type TabType = "medical" | "restrooms" | "gov";
+type TabType = "medical" | "restrooms" | "gov" | "police";
 
 interface Place {
   id: string;
@@ -10,12 +11,14 @@ interface Place {
   lng: number;
   distance: number;
   address?: string;
+  phone?: string;
 }
 
 const TABS: { id: TabType; label: string; icon: string }[] = [
   { id: "medical", label: "Medical", icon: "🏥" },
   { id: "restrooms", label: "Restrooms", icon: "💧" },
   { id: "gov", label: "Gov. Centers", icon: "🏛" },
+  { id: "police", label: "Police", icon: "🚔" },
 ];
 
 // Haversine formula for distance calculation
@@ -46,6 +49,7 @@ async function fetchOverpass(query: string): Promise<any[]> {
 
 export default function NearbyHelp(): React.ReactElement {
   const { point } = useGeolocation();
+  const { t } = useLang();
   const [activeTab, setActiveTab] = useState<TabType>("medical");
   const [places, setPlaces] = useState<Place[]>([]);
   const [loading, setLoading] = useState(false);
@@ -64,6 +68,8 @@ export default function NearbyHelp(): React.ReactElement {
       query = `[out:json];node["amenity"="toilets"](around:2000,${lat},${lng});out 10;`;
     } else if (activeTab === "gov") {
       query = `[out:json];node["amenity"="social_facility"](around:5000,${lat},${lng});out 10;node["office"="government"](around:5000,${lat},${lng});out 5;`;
+    } else if (activeTab === "police") {
+      query = `[out:json];node["amenity"="police"](around:5000,${lat},${lng});out 15;`;
     }
 
     const elements = await fetchOverpass(query);
@@ -76,6 +82,7 @@ export default function NearbyHelp(): React.ReactElement {
         lng: el.lon,
         distance: calculateDistance(lat, lng, el.lat, el.lon),
         address: el.tags?.["addr:street"] || undefined,
+        phone: el.tags?.phone || el.tags?.["contact:phone"] || undefined,
       }))
       .sort((a, b) => a.distance - b.distance);
 
@@ -96,7 +103,7 @@ export default function NearbyHelp(): React.ReactElement {
   return (
     <div className="fixed inset-0 z-40 bg-[#0A0E17] md:relative md:bg-transparent md:flex-1">
       <div className="h-full overflow-y-auto p-6">
-        <h1 className="text-2xl font-bold text-white mb-6">Nearby Help</h1>
+        <h1 className="text-2xl font-bold text-white mb-6">{t("nearby.title")}</h1>
 
         {/* Tabs */}
         <div className="flex gap-2 mb-6">
@@ -125,6 +132,26 @@ export default function NearbyHelp(): React.ReactElement {
         {activeTab === "gov" && (
           <div className="mb-4 p-3 rounded-md bg-[#1A2235] border border-[#00E5A0]/30 text-[#94A3B8] text-sm">
             🏛 Government centers may offer free sanitary pad schemes under national health programs.
+          </div>
+        )}
+        {activeTab === "police" && (
+          <div className="mb-4 space-y-2">
+            <div className="p-3 rounded-md bg-[#1A2235] border border-[#FF3B5C]/30 text-[#94A3B8] text-sm flex items-center justify-between">
+              <span>🚔 {t("emergency.police")}: 100</span>
+              <a href="tel:100" className="px-3 py-1 rounded-md bg-[#00E5A0] text-black text-xs font-medium hover:bg-[#00E5A0]/80">{t("nearby.call")}</a>
+            </div>
+            <div className="p-3 rounded-md bg-[#1A2235] border border-[#FF3B5C]/30 text-[#94A3B8] text-sm flex items-center justify-between">
+              <span>🚑 {t("emergency.ambulance")}: 108</span>
+              <a href="tel:108" className="px-3 py-1 rounded-md bg-[#00E5A0] text-black text-xs font-medium hover:bg-[#00E5A0]/80">{t("nearby.call")}</a>
+            </div>
+            <div className="p-3 rounded-md bg-[#1A2235] border border-[#FF3B5C]/30 text-[#94A3B8] text-sm flex items-center justify-between">
+              <span>🔥 {t("emergency.fire")}: 101</span>
+              <a href="tel:101" className="px-3 py-1 rounded-md bg-[#00E5A0] text-black text-xs font-medium hover:bg-[#00E5A0]/80">{t("nearby.call")}</a>
+            </div>
+            <div className="p-3 rounded-md bg-[#1A2235] border border-[#FF3B5C]/30 text-[#94A3B8] text-sm flex items-center justify-between">
+              <span>🆘 {t("emergency.women")}: 1091</span>
+              <a href="tel:1091" className="px-3 py-1 rounded-md bg-[#00E5A0] text-black text-xs font-medium hover:bg-[#00E5A0]/80">{t("nearby.call")}</a>
+            </div>
           </div>
         )}
 
@@ -170,12 +197,22 @@ export default function NearbyHelp(): React.ReactElement {
                       <p className="text-[#4B5563] text-xs">{place.address}</p>
                     )}
                   </div>
-                  <button
-                    onClick={() => handleGetDirections(place.lat, place.lng)}
-                    className="px-3 py-1.5 rounded-md bg-[#00E5A0] text-black text-xs font-medium hover:bg-[#00E5A0]/80 transition-colors"
-                  >
-                    Get Directions
-                  </button>
+                  <div className="flex gap-2">
+                    {place.phone && (
+                      <a
+                        href={`tel:${place.phone}`}
+                        className="px-3 py-1.5 rounded-md bg-[#00E5A0] text-black text-xs font-medium hover:bg-[#00E5A0]/80 transition-colors"
+                      >
+                        {t("nearby.call")}
+                      </a>
+                    )}
+                    <button
+                      onClick={() => handleGetDirections(place.lat, place.lng)}
+                      className="px-3 py-1.5 rounded-md bg-[#1A2235] text-[#94A3B8] border border-gray-700 text-xs font-medium hover:bg-[#1A2235]/80 transition-colors"
+                    >
+                      {t("nearby.directions")}
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

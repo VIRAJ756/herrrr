@@ -42,21 +42,21 @@ function addOrUpdate(map: MapboxMap, incidents: Incident[]): void {
     type: "circle",
     source: SOURCE_ID,
     paint: {
-      "circle-radius": ["interpolate", ["linear"], ["get", "severity"], 1, 4, 5, 10],
+      "circle-radius": ["interpolate", ["linear"], ["get", "severity"], 1, 8, 3, 10, 5, 12],
       "circle-color": [
         "interpolate",
         ["linear"],
         ["get", "severity"],
         1,
-        "rgba(0, 229, 160, 0.9)",
+        "#22C55E",
         3,
-        "rgba(245, 158, 11, 0.95)",
+        "#F59E0B",
         5,
-        "rgba(255, 59, 92, 0.95)",
+        "#FF3B5C",
       ],
-      "circle-stroke-color": "rgba(226, 232, 240, 0.85)",
-      "circle-stroke-width": 1,
-      "circle-opacity": 0.85,
+      "circle-stroke-color": "#FFFFFF",
+      "circle-stroke-width": 2,
+      "circle-opacity": 0.9,
     },
   });
 

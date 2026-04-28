@@ -1,11 +1,13 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "../services/api";
 import { fetchSafeRoute } from "../services/ai";
 import { useGeolocation } from "../hooks/useGeolocation";
 import { useJourneyStore } from "../store/journeyStore";
 import { useJourneyPing } from "../hooks/useJourneyPing";
+import { getDemoUser } from "../services/auth";
 import type { Journey } from "../types/journey";
+import type { Contact } from "../types/contact";
 import { MobileNav } from "../components/layout/MobileNav";
 import { DemoBanner } from "../components/layout/DemoBanner";
 
@@ -21,14 +23,34 @@ export default function JourneyShare(): React.ReactElement {
   const [destination, setDestination] = useState("");
   const [destinationLat, setDestinationLat] = useState("12.9352");
   const [destinationLng, setDestinationLng] = useState("77.6245");
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [userName, setUserName] = useState<string>("Guardian User");
 
-  useQuery({
+  useEffect(() => {
+    api.get<Contact[]>("/contacts")
+      .then((res) => {
+        const data = res.data as any;
+        const list = Array.isArray(data) ? data : data.contacts ?? data.data ?? [];
+        setContacts(list);
+      })
+      .catch(() => {});
+
+    const user = getDemoUser();
+    if (user?.name) {
+      setUserName(user.name);
+    }
+  }, []);
+
+  const journeyQuery = useQuery({
     queryKey: ["journey", "active"],
     queryFn: fetchActiveJourney,
-    onSuccess: (journey) => {
-      setActiveJourney(journey);
-    },
   });
+
+  useEffect(() => {
+    if (journeyQuery.data) {
+      setActiveJourney(journeyQuery.data);
+    }
+  }, [journeyQuery.data, setActiveJourney]);
 
   useJourneyPing(Boolean(activeJourney));
 
@@ -61,11 +83,57 @@ export default function JourneyShare(): React.ReactElement {
       });
       return response.data;
     },
-    onSuccess: async () => {
-      setActiveJourney(null);
-      await queryClient.invalidateQueries({ queryKey: ["journey", "active"] });
-    },
   });
+
+  useEffect(() => {
+    if (completeJourneyMutation.isSuccess) {
+      setActiveJourney(null);
+      queryClient.invalidateQueries({ queryKey: ["journey", "active"] });
+    }
+  }, [completeJourneyMutation.isSuccess, queryClient, setActiveJourney]);
+
+  const generateJourneyShareMessage = (
+    journeyId: string,
+    userName: string,
+    destination: string,
+    eta: string
+  ) => {
+    const trackingUrl = `${window.location.origin}/track/${journeyId}`;
+    return encodeURIComponent(
+      `📍 *GUARDIAN Live Journey Alert*\n\n` +
+      `*${userName}* has started a journey and is sharing live location with you.\n\n` +
+      `🗺 *Destination:* ${destination}\n` +
+      `🕐 *Expected arrival:* ${eta}\n\n` +
+      `🔴 *Track live location here:*\n${trackingUrl}\n\n` +
+      `Open the link above to see their real-time position on a map.\n` +
+      `If they don't arrive by ${eta}, please check on them immediately.\n\n` +
+      `— GUARDIAN Safety App`
+    );
+  };
+
+  const shareJourneyOnWhatsApp = (contact: Contact) => {
+    if (!activeJourney) return;
+    const eta = new Date(Date.now() + 30 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const message = generateJourneyShareMessage(
+      activeJourney.id,
+      userName,
+      destination || "Unknown",
+      eta
+    );
+    const phone = contact.phone.replace(/[^0-9+]/g, "");
+    window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+  };
+
+  const shareJourneyWithAllContacts = () => {
+    if (contacts.length === 0) {
+      alert("No contacts to share with. Add contacts first.");
+      return;
+    }
+    contacts.forEach((contact, index) => {
+      setTimeout(() => shareJourneyOnWhatsApp(contact), index * 1200);
+    });
+    alert(`📲 Sharing journey with ${contacts.length} contact(s) on WhatsApp`);
+  };
 
   const safeRouteQuery = useQuery({
     queryKey: ["ai", "safe-route", point?.lat, point?.lng, destinationLat, destinationLng],
@@ -168,6 +236,58 @@ export default function JourneyShare(): React.ReactElement {
                   {window.location.origin}/track/{activeJourney.shareToken}
                 </div>
               </div>
+            </div>
+
+            <div style={{ marginTop: "12px" }}>
+              <div style={{
+                fontSize: "10px", color: "#4B5563", letterSpacing: "1.5px",
+                marginBottom: "8px", fontWeight: 600,
+              }}>
+                SHARE LIVE LOCATION
+              </div>
+
+              {contacts.map((contact) => (
+                <div key={contact.id} style={{
+                  display: "flex", alignItems: "center",
+                  justifyContent: "space-between",
+                  background: "#1A2235",
+                  border: "1px solid rgba(148,163,184,0.08)",
+                  borderRadius: "8px",
+                  padding: "10px 14px",
+                  marginBottom: "6px",
+                }}>
+                  <div>
+                    <div style={{ fontSize: "13px", color: "#E2E8F0", fontWeight: 500 }}>
+                      {contact.name}
+                    </div>
+                    <div style={{ fontSize: "11px", color: "#4B5563" }}>{contact.relation}</div>
+                  </div>
+                  <button
+                    onClick={() => shareJourneyOnWhatsApp(contact)}
+                    style={{
+                      background: "#25D366", color: "white",
+                      border: "none", borderRadius: "6px",
+                      padding: "6px 12px", fontSize: "12px",
+                      fontWeight: 600, cursor: "pointer",
+                    }}
+                  >
+                    WhatsApp 📍
+                  </button>
+                </div>
+              ))}
+
+              <button
+                onClick={shareJourneyWithAllContacts}
+                style={{
+                  width: "100%", padding: "11px",
+                  background: "#25D366", color: "white",
+                  border: "none", borderRadius: "8px",
+                  fontSize: "13px", fontWeight: 700,
+                  cursor: "pointer", marginTop: "4px",
+                }}
+              >
+                📲 Share Location with All Contacts
+              </button>
             </div>
 
             <button

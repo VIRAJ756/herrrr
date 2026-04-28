@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/api";
 import { useGeolocation } from "../hooks/useGeolocation";
+import { useLang } from "../context/LanguageContext";
 import { MobileNav } from "../components/layout/MobileNav";
 import { DemoBanner } from "../components/layout/DemoBanner";
 import type { IncidentType } from "../types/incident";
@@ -38,6 +39,7 @@ function Pill(props: {
 }
 
 export default function ReportIncident(): React.ReactElement {
+  const { t } = useLang();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { point, requestOnce, isSupported, error: geoError } = useGeolocation();
@@ -45,7 +47,7 @@ export default function ReportIncident(): React.ReactElement {
   const [severity, setSeverity] = useState(3);
   const [anon, setAnon] = useState(true);
   const [desc, setDesc] = useState("");
-  const [locationLabel, setLocationLabel] = useState("Waiting for current location…");
+  const [locationLabel, setLocationLabel] = useState(t("topbar.location_loading"));
 
   const severityLabel = useMemo(() => {
     if (severity >= 5) return "CRITICAL";

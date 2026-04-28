@@ -157,7 +157,7 @@ export function GuardianMap(props: { demo: boolean; userLat?: number; userLng?: 
           {toggles.heatmap && <HeatmapLayer map={mapRef.current} demoData={demoZones ?? undefined} />}
           {toggles.incidents && <IncidentClusterLayer map={mapRef.current} />}
 
-          <div className="pointer-events-none absolute bottom-4 right-4 z-20 rounded-lg border border-guardian-border-subtle bg-guardian-bg-surface/95 p-3 text-xs text-guardian-text-secondary shadow-lg backdrop-blur">
+          <div className="pointer-events-none absolute bottom-14 right-4 z-20 rounded-lg border border-guardian-border-subtle bg-guardian-bg-surface/95 p-3 text-xs text-guardian-text-secondary shadow-lg backdrop-blur">
             <div className="text-[11px] font-mono tracking-widest text-guardian-text-primary">
               RISK LEGEND
             </div>

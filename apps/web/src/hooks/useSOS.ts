@@ -21,7 +21,7 @@ export function useSOS(onToast?: (title: string, description: string, variant: "
   cancelActive: () => void;
   openFakeCall: () => void;
 } {
-  const { stage, countdownSeconds, activeAlertId, setStage, setCountdown, setActiveAlertId } =
+  const { stage, countdownSeconds, activeAlertId, setStage, setCountdown, setActiveAlertId, setSosCoordinates } =
     useSOSStore();
   const { requestOnce } = useGeolocation();
   const socket = useSocket();
@@ -67,6 +67,7 @@ export function useSOS(onToast?: (title: string, description: string, variant: "
 
   const confirmTrigger = useCallback(async () => {
     const pos = await requestOnce();
+    setSosCoordinates({ lat: pos.lat, lng: pos.lng });
     setStage("SENT");
     if ("vibrate" in navigator) navigator.vibrate([100, 50, 100]);
 
@@ -78,7 +79,7 @@ export function useSOS(onToast?: (title: string, description: string, variant: "
     } catch {
       // Silent error - UI-only flow
     }
-  }, [requestOnce, setStage, socket]);
+  }, [requestOnce, setStage, setSosCoordinates, socket]);
 
   const cancelActive = useCallback(() => {
     if (activeAlertId) {

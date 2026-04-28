@@ -4,6 +4,24 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --c-bg-deep: #070B12;
+  --c-bg-panel: #0C1118;
+  --c-bg-item: #111820;
+  --c-bg-hover: #161E2A;
+  --c-border: rgba(148,163,184,0.10);
+  --c-border-focus: rgba(148,163,184,0.22);
+  --c-text-primary: #D1D9E6;
+  --c-text-secondary: #7C8FA6;
+  --c-text-muted: #3D4F61;
+  --c-accent-safe: #2DD4A0;
+  --c-accent-warn: #D4943A;
+  --c-accent-danger: #D94040;
+  --c-accent-info: #3A7BD4;
+  --c-whatsapp: #25D366;
+  --c-sos: #C0392B;
+}
+
 html,
 body,
 #root {
@@ -12,9 +30,10 @@ body,
 
 body {
   margin: 0;
-  font-family: var(--font-display);
-  background: var(--g-bg-base);
-  color: var(--g-text-primary);
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--c-bg-deep);
+  color: var(--c-text-primary);
+  -webkit-font-smoothing: antialiased;
 }
 
 .guardian-leaflet-map,
@@ -43,15 +62,46 @@ body {
 }
 
 /* Key animations (required) */
-@keyframes sos-pulse {
+@keyframes sosPulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(255, 59, 92, 0.7);
+    box-shadow: 0 0 0 0 rgba(255, 59, 92, 0.6);
   }
   70% {
     box-shadow: 0 0 0 20px rgba(255, 59, 92, 0);
   }
   100% {
     box-shadow: 0 0 0 0 rgba(255, 59, 92, 0);
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes countPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px) translateX(-50%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) translateX(-50%);
+    opacity: 1;
   }
 }
 
@@ -71,6 +121,18 @@ body {
   }
   50% {
     opacity: 0.3;
+  }
+}
+
+@keyframes sos-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 59, 92, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 20px rgba(255, 59, 92, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 59, 92, 0);
   }
 }
 
@@ -98,12 +160,26 @@ body {
 
 @keyframes slide-in {
   from {
-    transform: translateX(100%);
+    transform: translateY(-20px);
     opacity: 0;
   }
   to {
-    transform: translateX(0);
+    transform: translateY(0);
     opacity: 1;
   }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes shrinkBar {
+  from { width: 100%; }
+  to { width: 0%; }
 }
 

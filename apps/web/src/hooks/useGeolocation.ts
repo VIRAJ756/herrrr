@@ -45,22 +45,31 @@ export function useGeolocation(options?: PositionOptions): {
     return () => navigator.geolocation.clearWatch(watchId);
   }, [isSupported, positionOptions]);
 
-  async function requestOnce(): Promise<GeoPoint> {
-    if (!isSupported) throw new Error("Geolocation is not supported.");
-    return await new Promise<GeoPoint>((resolve, reject) => {
+  const requestOnce = (): Promise<GeoPoint> => {
+    return new Promise((resolve, reject) => {
+      if (!isSupported) {
+        reject(new Error("Geolocation not supported"));
+        return;
+      }
       navigator.geolocation.getCurrentPosition(
-        (pos) =>
-          resolve({
+        (pos) => {
+          const gp: GeoPoint = {
             lat: pos.coords.latitude,
             lng: pos.coords.longitude,
             accuracy: pos.coords.accuracy,
             timestamp: pos.timestamp,
-          }),
-        (e) => reject(new Error(e.message)),
-        positionOptions,
+          };
+          setPoint(gp);
+          resolve(gp);
+        },
+        (e) => {
+          setError(e.message);
+          reject(e);
+        },
+        positionOptions
       );
     });
-  }
+  };
 
   return { point, error, isSupported, requestOnce };
 }
