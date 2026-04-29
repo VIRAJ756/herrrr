@@ -103,11 +103,18 @@ export function GuardianMap(props: { demo: boolean; userLat?: number; userLng?: 
       maxZoom: 19,
     }).addTo(map);
 
-    // Add comprehensive label layer for better POI visibility and label rendering
+    // Add comprehensive label layer for Google Maps-like detail
+    L.tileLayer("https://tiles.stadiamaps.com/tiles/stamen_terrain_labels/{z}/{x}/{y}{r}.png", {
+      attribution: "&copy; Stadia Maps",
+      maxZoom: 19,
+      opacity: 0.95
+    }).addTo(map);
+
+    // Add OpenStreetMap layer for maximum POI detail and clarity
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors",
       maxZoom: 19,
-      opacity: 0.8
+      opacity: 0.7
     }).addTo(map);
 
     mapRef.current = map;
@@ -496,18 +503,30 @@ export function GuardianMap(props: { demo: boolean; userLat?: number; userLng?: 
 
               {/* Route Info Strip */}
               {routeInfo.distance && (
-                <div style={{
-                  marginTop: '10px',
-                  background: 'rgba(34,197,94,0.1)',
-                  border: '1px solid rgba(34,197,94,0.2)',
-                  borderRadius: '10px',
-                  padding: '8px 16px',
-                  fontSize: '13px',
-                  color: '#22c55e',
-                  textAlign: 'center'
-                }}>
-                  Route found — {routeInfo.distance} km · ~{routeInfo.duration} min · Following roads
-                </div>
+                <>
+                  <style>{`
+                    @keyframes routePulse {
+                      0%   { box-shadow: 0 0 6px rgba(139, 0, 0, 0.4); opacity: 1; border-color: rgba(139, 0, 0, 0.6); }
+                      50%  { box-shadow: 0 0 18px rgba(139, 0, 0, 0.9); opacity: 1; border-color: rgba(139, 0, 0, 0.9); }
+                      100% { box-shadow: 0 0 6px rgba(139, 0, 0, 0.4); opacity: 1; border-color: rgba(139, 0, 0, 0.6); }
+                    }
+                  `}</style>
+                  <div style={{
+                    marginTop: "10px",
+                    background: "rgba(139, 0, 0, 0.1)",
+                    border: "1px solid rgba(139, 0, 0, 0.7)",
+                    borderRadius: "10px",
+                    padding: "8px 16px",
+                    fontSize: "13px",
+                    fontWeight: "600",
+                    color: "#8b0000",
+                    textAlign: "center",
+                    animation: "routePulse 1.2s ease-in-out infinite",
+                    boxShadow: "0 0 10px rgba(139, 0, 0, 0.4)"
+                  }}>
+                    Route found — {routeInfo.distance} km · ~{routeInfo.duration} min · Following roads
+                  </div>
+                </>
               )}
             </div>
           )}

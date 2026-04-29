@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSOSStore } from "../../store/sosStore";
 import { useToast } from "../../hooks/useToast";
 
 export function SOSSent(): React.ReactElement {
   const { setStage } = useSOSStore();
   const { toast } = useToast();
+  const [showFakeCall, setShowFakeCall] = useState(false);
 
   useEffect(() => {
     // Show toast on mount
@@ -349,7 +350,61 @@ export function SOSSent(): React.ReactElement {
         >
           ✓ I'M SAFE — Cancel Emergency
         </button>
+        <button
+          onClick={() => setShowFakeCall(true)}
+          style={{
+            width: "100%",
+            padding: "16px",
+            marginTop: "12px",
+            background: "#0d1b2a",
+            border: "1px solid #4fc3f7",
+            borderRadius: "12px",
+            color: "#4fc3f7",
+            fontSize: "15px",
+            fontWeight: "bold",
+            letterSpacing: "0.5px",
+            cursor: "pointer"
+          }}
+        >
+          📞 Fake Call — Escape Situation
+        </button>
       </div>
+
+      {/* Fake Call Overlay */}
+      {showFakeCall && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh",
+          background: "#0a0a0a", zIndex: 9999, display: "flex",
+          flexDirection: "column", alignItems: "center", justifyContent: "space-between",
+          padding: "80px 40px"
+        }}>
+          <div style={{ textAlign: "center" }}>
+            <div style={{
+              width: 90, height: 90, borderRadius: "50%", background: "#1e3a5f",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 36, margin: "0 auto 16px"
+            }}>👤</div>
+            <div style={{ color: "#fff", fontSize: 30, fontWeight: "bold" }}>Mom</div>
+            <div style={{ color: "#aaa", fontSize: 16, marginTop: 8 }}>Incoming Call...</div>
+          </div>
+          <div style={{ display: "flex", gap: "60px", alignItems: "center" }}>
+            <div style={{ textAlign: "center" }}>
+              <button onClick={() => setShowFakeCall(false)} style={{
+                width: 72, height: 72, borderRadius: "50%", background: "#f44336",
+                border: "none", fontSize: 28, cursor: "pointer"
+              }}>📵</button>
+              <div style={{ color: "#fff", marginTop: 8, fontSize: 13 }}>Decline</div>
+            </div>
+            <div style={{ textAlign: "center" }}>
+              <button onClick={() => setShowFakeCall(false)} style={{
+                width: 72, height: 72, borderRadius: "50%", background: "#4caf50",
+                border: "none", fontSize: 28, cursor: "pointer"
+              }}>📞</button>
+              <div style={{ color: "#fff", marginTop: 8, fontSize: 13 }}>Accept</div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
