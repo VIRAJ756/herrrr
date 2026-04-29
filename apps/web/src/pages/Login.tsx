@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { setDemoUser } from "../services/auth";
+import ThreeBackground from "../components/ThreeBackground";
 
 type Tab = "signin" | "signup";
 
@@ -82,46 +83,20 @@ export default function Login(): React.ReactElement {
       <div
         style={{
           position: 'relative',
-          minHeight: '100vh',
-          width: '100%',
+          width: '100vw',
+          height: '100vh',
           overflow: 'hidden',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
         }}
       >
-      {/* Full screen background image */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 0,
-          backgroundImage: 'url("/login-bg.jpg")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          backgroundRepeat: 'no-repeat',
-          width: '100%',
-          height: '100%',
-        }}
-      />
-
-      {/* Dark overlay */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 1,
-          background: 'rgba(8, 10, 20, 0.72)',
-        }}
-      />
+      <ThreeBackground />
 
       {/* Login content above background */}
       <div
         style={{
           position: 'relative',
-          zIndex: 2,
+          zIndex: 10,
           width: '100%',
-          minHeight: '100vh',
+          height: '100vh',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -202,12 +177,14 @@ export default function Login(): React.ReactElement {
         </div>
 
         <section style={{
-          borderRadius: "12px",
+          borderRadius: "16px",
           border: "1px solid rgba(255,255,255,0.08)",
-          background: "rgba(17, 24, 39, 0.85)",
+          background: "rgba(10, 12, 24, 0.75)",
           padding: "16px",
           boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-          backdropFilter: "blur(2px)"
+          backdropFilter: "blur(12px)",
+          position: 'relative',
+          zIndex: 10
         }}>
           <div style={{
             marginBottom: "16px",
