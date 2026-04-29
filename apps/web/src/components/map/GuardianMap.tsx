@@ -337,111 +337,151 @@ export function GuardianMap(props: { demo: boolean; userLat?: number; userLng?: 
           {toggles.safeRoute && (
             <div style={{
               position: 'absolute',
-              top: '80px',
+              bottom: '40px',
               left: '50%',
               transform: 'translateX(-50%)',
-              background: '#0d1520',
-              border: '1px solid rgba(255,255,255,0.1)',
-              borderRadius: '14px',
-              padding: '14px 16px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              width: 'fit-content',
-              maxWidth: '420px',
-              zIndex: 1000
+              width: '90%',
+              maxWidth: '580px',
+              zIndex: 1000,
+              borderRadius: '24px'
             }}>
-              {/* Origin Row */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{
-                  width: '8px',
-                  height: '8px',
-                  borderRadius: '50%',
-                  backgroundColor: '#22c55e'
-                }}></div>
-                <span style={{
-                  color: '#94a3b8',
-                  fontSize: '13px'
-                }}>Your Location</span>
-              </div>
-
-              {/* Divider */}
+              {/* Main dark box */}
               <div style={{
-                width: '1px',
-                height: '24px',
-                background: 'rgba(255,255,255,0.1)',
-                borderLeft: '1px dashed rgba(255,255,255,0.2)'
-              }}></div>
+                background: '#0d1520',
+                borderRadius: '18px',
+                border: '1px solid rgba(255,255,255,0.08)',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 8px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06)',
+                padding: '18px 18px 18px 24px',
+                display: 'flex',
+                alignItems: 'center',
+                transform: 'perspective(1000px) rotateX(1deg)'
+              }}>
+                {/* Left section - Your Location */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{
+                    width: '10px',
+                    height: '10px',
+                    borderRadius: '50%',
+                    background: '#22c55e',
+                    boxShadow: '0 0 8px rgba(34,197,94,0.7)'
+                  }} className="safe-route-green-dot"></div>
+                  <span style={{
+                    color: '#94a3b8',
+                    fontSize: '16px',
+                    fontWeight: '400'
+                  }}>Your Location</span>
+                </div>
 
-              {/* Destination Row */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {/* Middle divider */}
                 <div style={{
-                  width: '8px',
-                  height: '8px',
-                  borderRadius: '50%',
-                  backgroundColor: '#ef4444'
+                  width: '1px',
+                  height: '44px',
+                  background: 'rgba(255,255,255,0.12)',
+                  margin: '0 16px'
                 }}></div>
-                <input
-                  type="text"
-                  placeholder="Enter destination..."
-                  value={destinationInput}
-                  onChange={(e) => setDestinationInput(e.target.value)}
+
+                {/* Right of divider: red dot + text input */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+                  <div style={{
+                    width: '10px',
+                    height: '10px',
+                    borderRadius: '50%',
+                    background: '#ef4444',
+                    boxShadow: '0 0 8px rgba(239,68,68,0.7)'
+                  }}></div>
+                  <input
+                    type="text"
+                    placeholder="Enter destination..."
+                    value={destinationInput}
+                    onChange={(e) => setDestinationInput(e.target.value)}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      color: 'white',
+                      fontSize: '16px',
+                      fontWeight: '400',
+                      width: '100%',
+                      outline: 'none'
+                    }}
+                  />
+                </div>
+
+                {/* Far right inside box - green 3D button */}
+                <button
+                  onClick={async () => {
+                    if (!destinationInput.trim() || !point) return;
+                    setIsGettingRoute(true);
+                    setRouteError('');
+                    setRouteInfo({ distance: '', duration: '' });
+                    await fetchSafeRoute();
+                  }}
+                  disabled={isGettingRoute || !destinationInput.trim()}
+                  onMouseEnter={(e) => {
+                    if (!isGettingRoute && destinationInput.trim()) {
+                      e.currentTarget.style.transform = 'translateY(-4px)';
+                      e.currentTarget.style.boxShadow = '0 10px 0 #15803d, 0 16px 32px rgba(34,197,94,0.5), inset 0 1px 0 rgba(255,255,255,0.25)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isGettingRoute && destinationInput.trim()) {
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 8px 0 #15803d, 0 12px 24px rgba(34,197,94,0.4), 0 4px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.25)';
+                    }
+                  }}
+                  onMouseDown={(e) => {
+                    if (!isGettingRoute && destinationInput.trim()) {
+                      e.currentTarget.style.transform = 'translateY(2px)';
+                      e.currentTarget.style.boxShadow = '0 2px 0 #15803d, 0 4px 12px rgba(34,197,94,0.3), inset 0 1px 0 rgba(255,255,255,0.25)';
+                    }
+                  }}
+                  onMouseUp={(e) => {
+                    if (!isGettingRoute && destinationInput.trim()) {
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 8px 0 #15803d, 0 12px 24px rgba(34,197,94,0.4), 0 4px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.25)';
+                    }
+                  }}
                   style={{
-                    background: 'transparent',
+                    marginLeft: '16px',
+                    width: '96px',
+                    height: '76px',
+                    background: isGettingRoute ? '#16a34a' : '#22c55e',
+                    borderRadius: '16px',
                     border: 'none',
                     color: 'white',
                     fontSize: '14px',
-                    width: '260px',
-                    outline: 'none'
+                    fontWeight: '700',
+                    lineHeight: '1.35',
+                    textAlign: 'center',
+                    cursor: isGettingRoute ? 'not-allowed' : 'pointer',
+                    flexShrink: 0,
+                    boxShadow: isGettingRoute ? 'none' : '0 8px 0 #15803d, 0 12px 24px rgba(34,197,94,0.4), 0 4px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.25)',
+                    transform: isGettingRoute ? 'none' : 'translateY(-2px)',
+                    transition: 'all 150ms ease',
+                    opacity: (isGettingRoute || !destinationInput.trim()) ? 0.7 : 1
                   }}
-                />
+                >
+                  {isGettingRoute ? 'Finding...' : <>Get<br/>Safe<br/>Route</>}
+                </button>
               </div>
 
-              {/* Get Route Button */}
-              <button
-                onClick={async () => {
-                  if (!destinationInput.trim() || !point) return;
-                  setIsGettingRoute(true);
-                  setRouteError('');
-                  setRouteInfo({ distance: '', duration: '' });
-                  await fetchSafeRoute();
-                }}
-                disabled={isGettingRoute || !destinationInput.trim()}
-                style={{
-                  background: isGettingRoute ? '#16a34a' : '#22c55e',
-                  color: 'white',
-                  fontSize: '13px',
-                  fontWeight: '600',
+              {/* Route Info Strip */}
+              {routeInfo.distance && (
+                <div style={{
+                  marginTop: '10px',
+                  background: 'rgba(34,197,94,0.1)',
+                  border: '1px solid rgba(34,197,94,0.2)',
+                  borderRadius: '10px',
                   padding: '8px 16px',
-                  borderRadius: '8px',
-                  border: 'none',
-                  cursor: isGettingRoute ? 'not-allowed' : 'pointer',
-                  opacity: (isGettingRoute || !destinationInput.trim()) ? 0.7 : 1
-                }}
-              >
-                {isGettingRoute ? 'Finding safe route...' : 'Get Safe Route'}
-              </button>
+                  fontSize: '13px',
+                  color: '#22c55e',
+                  textAlign: 'center'
+                }}>
+                  Route found — {routeInfo.distance} km · ~{routeInfo.duration} min · Following roads
+                </div>
+              )}
             </div>
           )}
 
-          {/* Route Info Display */}
-          {toggles.safeRoute && routeInfo.distance && (
-            <div style={{
-              position: 'absolute',
-              top: '150px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              color: '#22c55e',
-              fontSize: '12px',
-              background: '#0d1520',
-              padding: '6px 12px',
-              borderRadius: '8px',
-              border: '1px solid rgba(34,197,94,0.2)',
-              zIndex: 999
-            }}>
-              Route found — {routeInfo.distance} km · ~{routeInfo.duration} min
-            </div>
-          )}
 
           {/* Error Display */}
           {toggles.safeRoute && routeError && (
