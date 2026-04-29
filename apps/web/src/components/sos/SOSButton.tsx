@@ -277,21 +277,24 @@ export function SOSButton({ contacts = [], userName = "Guardian User" }: SOSButt
         aria-label="Emergency SOS"
         style={{
           position: "fixed",
-          bottom: "104px",
-          left: "24px",
-          width: "68px",
-          height: "68px",
+          bottom: "90px",
+          left: "50px",
+          width: "88px",
+          height: "88px",
           borderRadius: "50%",
-          background: "#FF3B5C",
-          border: "none",
+          background: "#f43f5e",
+          border: "3px solid rgba(255,255,255,0.3)",
+          outline: "3px solid rgba(244,63,94,0.4)",
+          outlineOffset: "4px",
+          boxShadow: "0 0 0 6px rgba(244,63,94,0.15), 0 0 0 12px rgba(244,63,94,0.08), 0 8px 32px rgba(244,63,94,0.5)",
           color: "white",
-          fontSize: "16px",
-          fontWeight: 700,
+          fontSize: "18px",
+          fontWeight: 800,
           fontFamily: "'JetBrains Mono', monospace",
           cursor: "pointer",
-          zIndex: 1000,
-          letterSpacing: "1px",
-          animation: "sosPulse 2s infinite",
+          zIndex: 999,
+          letterSpacing: "0.1em",
+          animation: "sosPulse 2s ease-out infinite",
         }}
       >
         SOS
@@ -525,9 +528,9 @@ export function SOSButton({ contacts = [], userName = "Guardian User" }: SOSButt
       <style>{`
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
         @keyframes sosPulse {
-          0%{box-shadow:0 0 0 0 rgba(255,59,92,0.6)}
-          70%{box-shadow:0 0 0 18px rgba(255,59,92,0)}
-          100%{box-shadow:0 0 0 0 rgba(255,59,92,0)}
+          0%{box-shadow:0 0 0 0 rgba(244,63,94,0.4), 0 8px 32px rgba(244,63,94,0.5)}
+          70%{box-shadow:0 0 0 20px rgba(244,63,94,0), 0 8px 32px rgba(244,63,94,0.5)}
+          100%{box-shadow:0 0 0 0 rgba(244,63,94,0), 0 8px 32px rgba(244,63,94,0.5)}
         }
         @keyframes countPulse {
           0%,100%{transform:scale(1)} 50%{transform:scale(1.05)}

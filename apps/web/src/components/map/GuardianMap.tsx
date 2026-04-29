@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import L, { type CircleMarker, type Map as LeafletMap } from "leaflet";
+import L, { type CircleMarker, type Map as LeafletMap, type Polyline } from "leaflet";
 import { useGeolocation } from "../../hooks/useGeolocation";
 import { useMapStore } from "../../store/mapStore";
 import { HeatmapLayer } from "./HeatmapLayer";
@@ -72,6 +72,8 @@ export function GuardianMap(props: { demo: boolean; userLat?: number; userLng?: 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<LeafletMap | null>(null);
   const liveMarkerRef = useRef<CircleMarker | null>(null);
+  const safeRouteRef = useRef<Polyline | null>(null);
+  const safeRouteMarkersRef = useRef<CircleMarker[]>([]);
   const [ready, setReady] = useState(false);
 
   const { point } = useGeolocation();
@@ -143,6 +145,151 @@ export function GuardianMap(props: { demo: boolean; userLat?: number; userLng?: 
     liveMarkerRef.current.removeFrom(map);
     liveMarkerRef.current = null;
   }, [toggles.liveTracking]);
+
+  // Safe Route effect
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !point) return;
+
+    // Remove existing safe route
+    if (safeRouteRef.current) {
+      safeRouteRef.current.removeFrom(map);
+      safeRouteRef.current = null;
+    }
+    safeRouteMarkersRef.current.forEach(marker => marker.removeFrom(map));
+    safeRouteMarkersRef.current = [];
+
+    if (!toggles.safeRoute) return;
+
+    // Call safe route API
+    const fetchSafeRoute = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/api/ai/safe-route', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            originLat: point.lat,
+            originLng: point.lng,
+            destLat: point.lat + 0.02,
+            destLng: point.lng + 0.02
+          })
+        });
+        
+        if (response.ok) {
+          const routeData = await response.json();
+          if (routeData.route && routeData.route.length > 0) {
+            // Draw polyline from API response
+            const coordinates: [number, number][] = routeData.route.map((point: any) => [point.lat, point.lng]);
+            const polyline = L.polyline(coordinates, {
+              color: '#22c55e',
+              weight: 4,
+              opacity: 0.8,
+              dashArray: '8 4'
+            }).addTo(map);
+            safeRouteRef.current = polyline;
+
+            // Add origin marker
+            const originMarker = L.circleMarker([point.lat, point.lng], {
+              radius: 8,
+              color: '#22c55e',
+              weight: 2,
+              fillColor: '#22c55e',
+              fillOpacity: 0.8
+            }).addTo(map).bindTooltip('You');
+            safeRouteMarkersRef.current.push(originMarker);
+
+            // Add destination marker
+            const destMarker = L.circleMarker([point.lat + 0.02, point.lng + 0.02], {
+              radius: 8,
+              color: '#22c55e',
+              weight: 2,
+              fillColor: '#22c55e',
+              fillOpacity: 0.8
+            }).addTo(map).bindTooltip('Destination');
+            safeRouteMarkersRef.current.push(destMarker);
+          }
+        } else {
+          // Fallback: draw simple straight line
+          const coordinates = [
+            [point.lat, point.lng],
+            [point.lat + 0.02, point.lng + 0.02]
+          ];
+          const polyline = L.polyline(coordinates, {
+            color: '#22c55e',
+            weight: 4,
+            opacity: 0.8,
+            dashArray: '8 4'
+          }).addTo(map);
+          safeRouteRef.current = polyline;
+
+          // Add origin marker
+          const originMarker = L.circleMarker([point.lat, point.lng], {
+            radius: 8,
+            color: '#22c55e',
+            weight: 2,
+            fillColor: '#22c55e',
+            fillOpacity: 0.8
+          }).addTo(map).bindTooltip('You');
+          safeRouteMarkersRef.current.push(originMarker);
+
+          // Add destination marker
+          const destMarker = L.circleMarker([point.lat + 0.02, point.lng + 0.02], {
+            radius: 8,
+            color: '#22c55e',
+            weight: 2,
+            fillColor: '#22c55e',
+            fillOpacity: 0.8
+          }).addTo(map).bindTooltip('Destination');
+          safeRouteMarkersRef.current.push(destMarker);
+        }
+      } catch (error) {
+        console.error('Safe route API error:', error);
+        // Fallback: draw simple straight line
+        const coordinates: [number, number][] = [
+          [point.lat, point.lng],
+          [point.lat + 0.02, point.lng + 0.02]
+        ];
+        const polyline = L.polyline(coordinates, {
+          color: '#22c55e',
+          weight: 4,
+          opacity: 0.8,
+          dashArray: '8 4'
+        }).addTo(map);
+        safeRouteRef.current = polyline;
+
+        // Add origin marker
+        const originMarker = L.circleMarker([point.lat, point.lng], {
+          radius: 8,
+          color: '#22c55e',
+          weight: 2,
+          fillColor: '#22c55e',
+          fillOpacity: 0.8
+        }).addTo(map).bindTooltip('You');
+        safeRouteMarkersRef.current.push(originMarker);
+
+        // Add destination marker
+        const destMarker = L.circleMarker([point.lat + 0.02, point.lng + 0.02], {
+          radius: 8,
+          color: '#22c55e',
+          weight: 2,
+          fillColor: '#22c55e',
+          fillOpacity: 0.8
+        }).addTo(map).bindTooltip('Destination');
+        safeRouteMarkersRef.current.push(destMarker);
+      }
+    };
+
+    fetchSafeRoute();
+
+    return () => {
+      if (safeRouteRef.current) {
+        safeRouteRef.current.removeFrom(map);
+        safeRouteRef.current = null;
+      }
+      safeRouteMarkersRef.current.forEach(marker => marker.removeFrom(map));
+      safeRouteMarkersRef.current = [];
+    };
+  }, [toggles.safeRoute, point]);
 
   return (
     <div className="absolute inset-0 z-0 h-full w-full">

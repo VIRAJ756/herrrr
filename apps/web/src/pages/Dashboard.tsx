@@ -52,7 +52,7 @@ export default function Dashboard(props: { demo: boolean }): React.ReactElement 
       Notification.requestPermission();
     }
 
-    api.get("/zones")
+    api.get("/zones/heatmap")
       .then((res) => {
         const data = res.data as any;
         const zones = Array.isArray(data) ? data : data.zones ?? data.data ?? [];

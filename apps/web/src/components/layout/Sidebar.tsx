@@ -83,9 +83,13 @@ export function Sidebar(): React.ReactElement {
         <img
   src="/images/guardian-hero.jpg"
   alt="Guardian Safety"
-  style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '12px' }}
+  style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '12px', marginBottom: '24px' }}
 />
-        <nav className="flex flex-col gap-1">
+        <div style={{ 
+          borderBottom: '1px solid rgba(255,255,255,0.06)', 
+          marginBottom: '16px' 
+        }}></div>
+        <nav className="flex flex-col gap-1" style={{ paddingTop: '8px' }}>
           {NAV.map((item) => {
             const active = location.pathname === item.to;
             return (
