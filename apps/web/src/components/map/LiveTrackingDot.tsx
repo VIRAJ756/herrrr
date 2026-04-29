@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import type { Map as MapboxMap } from "mapbox-gl";
 import mapboxgl from "mapbox-gl";
 
-const SOURCE_ID = "guardian-live-dot-source";
-const LAYER_ID = "guardian-live-dot-layer";
+const SOURCE_ID = "streeastra-live-dot-source";
+const LAYER_ID = "streeastra-live-dot-layer";
 
 function addOrUpdate(map: MapboxMap, lat: number, lng: number): void {
   const data: GeoJSON.FeatureCollection<GeoJSON.Point> = {

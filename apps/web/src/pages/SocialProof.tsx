@@ -37,7 +37,7 @@ export default function SocialProof(): React.ReactElement {
         >
           <img
             src="/avatar.png"
-            alt="Guardian User"
+            alt="Stree Astra User"
             style={{
               width: '100%',
               height: '100%',
@@ -72,7 +72,7 @@ export default function SocialProof(): React.ReactElement {
             Trusted by Thousands
           </h1>
           <p className="text-[16px] font-[400] text-[#94a3b8] leading-[1.6] max-w-[300px] mx-auto">
-            Women everywhere feel more confident with Guardian by their side.
+            Women everywhere feel more confident with STREE ASTRA by their side.
           </p>
         </div>
 
@@ -82,7 +82,7 @@ export default function SocialProof(): React.ReactElement {
           {/* CARD 1 */}
           <div className="bg-[#1a2235] border border-white/8 rounded-[16px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.2)]">
             <blockquote className="text-[15px] italic text-[#e2e8f0] leading-[1.7] mb-5">
-              "Guardian changed how I commute at night. The live tracking feature gives my family peace of mind every single day."
+              "STREE ASTRA changed how I commute at night. The live tracking feature gives my family peace of mind every single day."
             </blockquote>
             <div className="flex items-center gap-[14px]">
               <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#c0392b] to-[#e67e22] flex items-center justify-center">

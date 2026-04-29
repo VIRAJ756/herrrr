@@ -25,7 +25,7 @@ export function TopBar(props: {
           className="font-mono text-sm tracking-widest"
           style={{ color: "var(--c-text-primary)" }}
         >
-          GUARDIAN
+          STREE ASTRA
         </div>
         <div className="hidden text-xs md:block" style={{ color: "var(--c-text-secondary)" }}>
           {props.areaLabel}

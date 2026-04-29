@@ -18,7 +18,7 @@ function LoadingShell(): React.ReactElement {
     <div className="min-h-screen bg-guardian-bg-base text-guardian-text-primary">
       <div className="mx-auto max-w-4xl px-6 py-10">
         <div className="text-sm font-mono text-guardian-text-secondary">
-          GUARDIAN / Loading…
+          STREE ASTRA / Loading…
         </div>
       </div>
     </div>

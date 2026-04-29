@@ -20,7 +20,7 @@ async function ensureDemoUser(userId: string): Promise<void> {
     update: {},
     create: {
       id: userId,
-      name: "Guardian Demo User",
+      name: "Stree Astra Demo User",
     },
   });
 }

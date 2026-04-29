@@ -15,7 +15,7 @@ interface SOSButtonProps {
   userName?: string;
 }
 
-export function SOSButton({ contacts = [], userName = "Guardian User" }: SOSButtonProps = {}): React.ReactElement {
+export function SOSButton({ contacts = [], userName = "Stree Astra User" }: SOSButtonProps = {}): React.ReactElement {
   const { t } = useLang();
   const [state, setState] = useState<SOSState>("idle");
   const [count, setCount] = useState(5);
@@ -94,11 +94,11 @@ export function SOSButton({ contacts = [], userName = "Guardian User" }: SOSButt
     // Show "Alert SMS Sent" notification after a 600ms delay
     // (slight delay so it appears after the panel has rendered)
     const notifTimer = setTimeout(() => {
-      const existing = document.getElementById("guardian-sms-notif");
+      const existing = document.getElementById("streeastra-sms-notif");
       if (existing) existing.remove();
 
       const el = document.createElement("div");
-      el.id = "guardian-sms-notif";
+      el.id = "streeastra-sms-notif";
       el.style.cssText = `
         position: fixed;
         top: 20px;
@@ -169,7 +169,7 @@ export function SOSButton({ contacts = [], userName = "Guardian User" }: SOSButt
           `🗺 Coordinates: ${lat.toFixed(6)}, ${lng.toFixed(6)}\n\n` +
           `🕐 Time: ${new Date().toLocaleString()}\n\n` +
           `Please call her immediately or send help to the above location.\n\n` +
-          `— Sent via GUARDIAN Safety App`
+          `— Sent via STREE ASTRA Safety App`
         );
       } else {
         message = encodeURIComponent(
@@ -177,7 +177,7 @@ export function SOSButton({ contacts = [], userName = "Guardian User" }: SOSButt
           `*${userName}* needs immediate help!\n\n` +
           `⚠️ Location unavailable — please call her immediately!\n\n` +
           `🕐 Time: ${new Date().toLocaleString()}\n\n` +
-          `— Sent via GUARDIAN Safety App`
+          `— Sent via STREE ASTRA Safety App`
         );
       }
       const phone = contact.phone.replace(/[^0-9+]/g, "");
@@ -243,7 +243,7 @@ export function SOSButton({ contacts = [], userName = "Guardian User" }: SOSButt
     const url = URL.createObjectURL(audioBlob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "guardian-sos-audio.webm";
+    a.download = "streeastra-sos-audio.webm";
     a.click();
     URL.revokeObjectURL(url);
   };

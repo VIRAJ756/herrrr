@@ -5,8 +5,8 @@ import type { Incident } from "../../types/incident";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../services/api";
 
-const SOURCE_ID = "guardian-incidents-source";
-const LAYER_ID = "guardian-incidents-layer";
+const SOURCE_ID = "streeastra-incidents-source";
+const LAYER_ID = "streeastra-incidents-layer";
 
 async function fetchIncidents(): Promise<Incident[]> {
   const res = await api.get<Incident[]>("/incidents");

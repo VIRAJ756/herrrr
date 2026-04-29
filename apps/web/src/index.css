@@ -36,8 +36,8 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-.guardian-leaflet-map,
-.guardian-leaflet-map .leaflet-container {
+.streeastra-leaflet-map,
+.streeastra-leaflet-map .leaflet-container {
   position: absolute;
   inset: 0;
   height: 100%;
@@ -45,19 +45,19 @@ body {
   z-index: 0;
 }
 
-.guardian-leaflet-map .leaflet-pane,
-.guardian-leaflet-map .leaflet-tile-pane,
-.guardian-leaflet-map .leaflet-overlay-pane,
-.guardian-leaflet-map .leaflet-shadow-pane,
-.guardian-leaflet-map .leaflet-marker-pane,
-.guardian-leaflet-map .leaflet-tooltip-pane,
-.guardian-leaflet-map .leaflet-popup-pane {
+.streeastra-leaflet-map .leaflet-pane,
+.streeastra-leaflet-map .leaflet-tile-pane,
+.streeastra-leaflet-map .leaflet-overlay-pane,
+.streeastra-leaflet-map .leaflet-shadow-pane,
+.streeastra-leaflet-map .leaflet-marker-pane,
+.streeastra-leaflet-map .leaflet-tooltip-pane,
+.streeastra-leaflet-map .leaflet-popup-pane {
   z-index: 1;
 }
 
-.guardian-leaflet-map .leaflet-top,
-.guardian-leaflet-map .leaflet-bottom,
-.guardian-leaflet-map .leaflet-control {
+.streeastra-leaflet-map .leaflet-top,
+.streeastra-leaflet-map .leaflet-bottom,
+.streeastra-leaflet-map .leaflet-control {
   z-index: 5;
 }
 

@@ -28,7 +28,7 @@ export default function Dashboard(props: { demo: boolean }): React.ReactElement 
   const { toast, toasts, dismiss: dismissToast } = useToast();
 
   const [contacts, setContacts] = useState<Contact[]>([]);
-  const [userName, setUserName] = useState<string>("Guardian User");
+  const [userName, setUserName] = useState<string>("Stree Astra User");
   const [riskZones, setRiskZones] = useState<any[]>([]);
 
   const lastNotifiedZone = useRef<string | null>(null);
@@ -73,11 +73,11 @@ export default function Dashboard(props: { demo: boolean }): React.ReactElement 
   };
 
   const showRiskZoneAlert = (severity: string, zone: any, color: string) => {
-    const existing = document.getElementById("guardian-risk-alert");
+    const existing = document.getElementById("streeastra-risk-alert");
     if (existing) existing.remove();
 
     const el = document.createElement("div");
-    el.id = "guardian-risk-alert";
+    el.id = "streeastra-risk-alert";
     el.style.cssText = `
       position: fixed;
       top: 64px;
@@ -111,7 +111,7 @@ export default function Dashboard(props: { demo: boolean }): React.ReactElement 
             ${zone.incidentCount || "Multiple"} incidents reported within 300m — Stay alert
           </div>
         </div>
-        <div onclick="document.getElementById('guardian-risk-alert').remove()"
+        <div onclick="document.getElementById('streeastra-risk-alert').remove()"
           style="font-size:16px;color:#4B5563;cursor:pointer;padding:2px 4px;line-height:1;">✕</div>
       </div>
       <div style="
@@ -123,7 +123,7 @@ export default function Dashboard(props: { demo: boolean }): React.ReactElement 
     document.body.appendChild(el);
 
     setTimeout(() => {
-      if (document.getElementById("guardian-risk-alert")) {
+      if (document.getElementById("streeastra-risk-alert")) {
         el.style.opacity = "0";
         el.style.transition = "opacity 0.4s";
         setTimeout(() => el.remove(), 400);
@@ -151,9 +151,9 @@ export default function Dashboard(props: { demo: boolean }): React.ReactElement 
         showRiskZoneAlert(severity, zone, color);
 
         if (Notification.permission === "granted") {
-          new Notification("⚠️ GUARDIAN Safety Alert", {
+          new Notification("⚠️ STREE ASTRA Safety Alert", {
             body: `You are entering a ${severity} risk area. ${zone.incidentCount || "Multiple"} incidents reported nearby.`,
-            icon: "/guardian-icon.png",
+            icon: "/streeastra-icon.png",
             tag: "risk-zone",
             requireInteraction: true,
           });

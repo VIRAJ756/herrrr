@@ -24,7 +24,7 @@ export default function JourneyShare(): React.ReactElement {
   const [destinationLat, setDestinationLat] = useState("12.9352");
   const [destinationLng, setDestinationLng] = useState("77.6245");
   const [contacts, setContacts] = useState<Contact[]>([]);
-  const [userName, setUserName] = useState<string>("Guardian User");
+  const [userName, setUserName] = useState<string>("Guaadisner");
 
   useEffect(() => {
     api.get<Contact[]>("/contacts")
@@ -100,14 +100,14 @@ export default function JourneyShare(): React.ReactElement {
   ) => {
     const trackingUrl = `${window.location.origin}/track/${journeyId}`;
     return encodeURIComponent(
-      `📍 *GUARDIAN Live Journey Alert*\n\n` +
+      `📍 *STREE ASTRA Live Journey Alert*\n\n` +
       `*${userName}* has started a journey and is sharing live location with you.\n\n` +
       `🗺 *Destination:* ${destination}\n` +
       `🕐 *Expected arrival:* ${eta}\n\n` +
       `🔴 *Track live location here:*\n${trackingUrl}\n\n` +
       `Open the link above to see their real-time position on a map.\n` +
       `If they don't arrive by ${eta}, please check on them immediately.\n\n` +
-      `— GUARDIAN Safety App`
+      `— STREE ASTRA Safety App`
     );
   };
 

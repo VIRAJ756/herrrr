@@ -37,7 +37,7 @@ export function trackingHandler(io: SocketIOServer, socket: Socket, _env: Env): 
         update: {},
         create: {
           id: userId,
-          name: "Guardian Demo User",
+          name: "Stree Astra Demo User",
         },
       });
     }

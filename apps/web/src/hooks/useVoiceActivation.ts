@@ -33,7 +33,7 @@ export function useVoiceActivation(enabled: boolean, onTrigger: () => void): voi
       recognition.onresult = (event) => {
         const lastResult = event.results[event.results.length - 1];
         const transcript = lastResult?.[0]?.transcript?.toLowerCase?.() ?? "";
-        if (transcript.includes("hey guardian") && transcript.includes("sos")) {
+        if (transcript.includes("hey stree astra") && transcript.includes("sos")) {
           onTrigger();
         }
       };

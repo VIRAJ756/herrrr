@@ -50,7 +50,7 @@ export default function Login(): React.ReactElement {
     if (!validateSignIn()) return;
     void fakeProcess(() =>
       setDemoUser({
-        name: signinEmail.split("@")[0] || "Guardian User",
+        name: signinEmail.split("@")[0] || "Stree Astra User",
         email: signinEmail,
         loggedIn: true,
       }),
@@ -72,7 +72,7 @@ export default function Login(): React.ReactElement {
     void fakeProcess(() =>
       setDemoUser({
         name: "Demo User",
-        email: "demo@guardian.app",
+        email: "demo@streeastra.app",
         loggedIn: true,
       }),
     );
@@ -160,7 +160,7 @@ export default function Login(): React.ReactElement {
               }}>
                 <img
                   src="/images/guardian-hero.jpg"
-                  alt="Guardian"
+                  alt="STREE ASTRA"
                   style={{
                     width: '100%',
                     height: '100%',
@@ -172,7 +172,7 @@ export default function Login(): React.ReactElement {
             </div>
 
           </div>
-          <h1 style={{ fontSize: "24px", fontWeight: 600 }}>Guardian</h1>
+          <h1 style={{ fontSize: "24px", fontWeight: 600 }}>STREE ASTRA</h1>
           <p style={{ marginTop: "4px", fontSize: "14px", color: "#94a3b8" }}>Your personal safety companion</p>
         </div>
 

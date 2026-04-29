@@ -1,11 +1,11 @@
-# GUARDIAN — Women Safety & Risk Zone Mapping Platform
+# STREE ASTRA — Women Safety & Risk Zone Mapping Platform
 *"Every location. Every moment. Protected."*
 
 ## Problem
 India reports persistent threats to women’s safety in public spaces: harassment hotspots, poorly lit corridors, and delayed response when someone is in danger. People need **operator-grade situational awareness** and **fast escalation**—not just an “emergency button”.
 
 ## Solution
-GUARDIAN is a dark, intelligence-first safety platform with:
+STREE ASTRA is a dark, intelligence-first safety platform with:
 - Real-time SOS escalation to trusted contacts
 - Live journey sharing with overdue detection
 - Risk zone heatmaps computed from recent incidents

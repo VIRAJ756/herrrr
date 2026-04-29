@@ -361,7 +361,7 @@ export function GuardianMap(props: { demo: boolean; userLat?: number; userLng?: 
     <div className="absolute inset-0 z-0 h-full w-full">
       <div
         ref={containerRef}
-        className="guardian-leaflet-map h-full min-h-[400px] w-full min-w-full"
+        className="streeastra-leaflet-map h-full min-h-[400px] w-full min-w-full"
         aria-label="Safety map"
       />
 
@@ -401,7 +401,7 @@ export function GuardianMap(props: { demo: boolean; userLat?: number; userLng?: 
                     borderRadius: '50%',
                     background: '#22c55e',
                     boxShadow: '0 0 8px rgba(34,197,94,0.7)'
-                  }} className="safe-route-green-dot"></div>
+                  }} className="streeastra-safe-route-green-dot"></div>
                   <span style={{
                     color: '#94a3b8',
                     fontSize: '16px',
@@ -551,8 +551,8 @@ export function GuardianMap(props: { demo: boolean; userLat?: number; userLng?: 
             </div>
           )}
 
-          <div className="pointer-events-none absolute bottom-14 right-4 z-20 rounded-lg border border-guardian-border-subtle bg-guardian-bg-surface/95 p-3 text-xs text-guardian-text-secondary shadow-lg backdrop-blur">
-            <div className="text-[11px] font-mono tracking-widest text-guardian-text-primary">
+          <div className="pointer-events-none absolute bottom-14 right-4 z-20 rounded-lg border border-streeastra-border-subtle bg-streeastra-bg-surface/95 p-3 text-xs text-streeastra-text-secondary shadow-lg backdrop-blur">
+            <div className="text-[11px] font-mono tracking-widest text-streeastra-text-primary">
               RISK LEGEND
             </div>
             <div className="mt-2 flex items-center gap-2">

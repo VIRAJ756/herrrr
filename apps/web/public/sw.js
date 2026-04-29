@@ -39,7 +39,7 @@ self.addEventListener("fetch", (event) => {
 
 self.addEventListener("push", (event) => {
   const data = event.data?.json?.() ?? {
-    title: "Guardian Alert",
+    title: "STREE ASTRA Alert",
     body: "A safety alert was triggered nearby.",
   };
   event.waitUntil(

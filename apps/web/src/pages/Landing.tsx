@@ -24,7 +24,7 @@ export default function Landing(props: { demo: boolean }): React.ReactElement {
           letterSpacing: "0.1em",
           color: "#4a5568"
         }}>
-          GUARDIAN // Every location. Every moment. Protected.
+          STREE ASTRA // Every location. Every moment. Protected.
         </div>
         <h1 style={{
           fontSize: "48px",

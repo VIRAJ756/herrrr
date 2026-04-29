@@ -64,7 +64,7 @@ export function IncidentClusterLayer(props: { map: LeafletMap }): React.ReactEle
       const bgColor = isHighRisk ? "#ef4444" : cluster.count > 1 ? "#f59e0b" : "#22c55e";
       const marker = L.marker([cluster.lat, cluster.lng], {
         icon: L.divIcon({
-          className: "guardian-cluster-marker",
+          className: "streeastra-cluster-marker",
           html: `<div style="min-width:32px;height:32px;border-radius:16px;background:${bgColor};color:white;display:flex;align-items:center;justify-content:center;font-weight:700;border:2px solid rgba(255,255,255,0.6)">${cluster.count}</div>`,
         }),
       });
