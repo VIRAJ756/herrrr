@@ -15,32 +15,57 @@ const ReactionBar = ({ incidentId, initialUpvotes = 0, initialDownvotes = 0 }: {
   const [userVote, setUserVote] = useState<"up" | "down" | null>(null);
   const [isVerified, setIsVerified] = useState(initialUpvotes >= 3);
   const [animating, setAnimating] = useState<"up" | "down" | null>(null);
+  const [isVoted, setIsVoted] = useState(() => {
+    return localStorage.getItem(`guardian_voted_${incidentId}`) === 'true';
+  });
 
   const vote = async (type: "up" | "down") => {
     if (userVote === type) return;
+    if (type === "up" && isVoted) return; // Prevent double voting
 
     if (type === "up") {
-      setUpvotes(prev => prev + 1);
-      if (userVote === "down") setDownvotes(prev => prev - 1);
+      try {
+        const response = await fetch(`http://localhost:4000/api/incidents/${incidentId}/verify`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'upvote' })
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setUpvotes(data.verifiedCount);
+          setIsVerified(data.isVerified);
+          setUserVote("up");
+          setAnimating("up");
+          setTimeout(() => setAnimating(null), 400);
+          
+          // Mark as voted in localStorage
+          localStorage.setItem(`guardian_voted_${incidentId}`, 'true');
+          setIsVoted(true);
+        }
+      } catch (error) {
+        console.error('Vote error:', error);
+      }
     } else {
+      // Downvote logic (unchanged)
       setDownvotes(prev => prev + 1);
       if (userVote === "up") setUpvotes(prev => prev - 1);
-    }
-    setUserVote(type);
-    setAnimating(type);
-    setTimeout(() => setAnimating(null), 400);
+      setUserVote(type);
+      setAnimating(type);
+      setTimeout(() => setAnimating(null), 400);
 
-    const newUpvotes = type === "up" ? upvotes + 1 : upvotes - (userVote === "up" ? 1 : 0);
-    setIsVerified(newUpvotes >= 3);
+      const newUpvotes = upvotes - (userVote === "up" ? 1 : 0);
+      setIsVerified(newUpvotes >= 3);
 
-    try {
-      await fetch(`/api/incidents/${incidentId}/vote`, {
+      try {
+        await fetch(`/api/incidents/${incidentId}/vote`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ vote: type }),
-      });
+        });
     } catch {
+    }
     }
   };
 
@@ -53,22 +78,7 @@ const ReactionBar = ({ incidentId, initialUpvotes = 0, initialDownvotes = 0 }: {
       paddingTop: "10px",
       borderTop: "1px solid rgba(148,163,184,0.08)",
     }}>
-      {isVerified && (
-        <div style={{
-          fontSize: "10px",
-          fontWeight: 600,
-          color: "#00E5A0",
-          background: "rgba(0,229,160,0.08)",
-          border: "1px solid rgba(0,229,160,0.2)",
-          borderRadius: "4px",
-          padding: "2px 7px",
-          letterSpacing: "0.5px",
-          marginRight: "4px",
-        }}>
-          ✓ VERIFIED
-        </div>
-      )}
-      {!isVerified && (
+      {!isVerified ? (
         <div style={{
           fontSize: "10px",
           color: "#4B5563",
@@ -81,22 +91,37 @@ const ReactionBar = ({ incidentId, initialUpvotes = 0, initialDownvotes = 0 }: {
         }}>
           UNVERIFIED
         </div>
+      ) : (
+        <div style={{
+          fontSize: "10px",
+          color: "white",
+          background: "#16a34a",
+          border: "1px solid #16a34a",
+          borderRadius: "4px",
+          padding: "2px 7px",
+          letterSpacing: "0.5px",
+          marginRight: "4px",
+        }}>
+          VERIFIED
+        </div>
       )}
 
       <button
         onClick={() => vote("up")}
+        disabled={isVoted}
         style={{
           display: "flex", alignItems: "center", gap: "5px",
           background: userVote === "up" ? "rgba(0,229,160,0.1)" : "rgba(148,163,184,0.05)",
           border: `1px solid ${userVote === "up" ? "rgba(0,229,160,0.3)" : "rgba(148,163,184,0.1)"}`,
           borderRadius: "6px",
           padding: "4px 10px",
-          cursor: "pointer",
+          cursor: isVoted ? "not-allowed" : "pointer",
           color: userVote === "up" ? "#00E5A0" : "#94A3B8",
           fontSize: "12px",
           fontWeight: 500,
           transform: animating === "up" ? "scale(1.15)" : "scale(1)",
           transition: "all 0.2s ease",
+          opacity: isVoted ? 0.5 : 1,
         }}
       >
         <span>▲</span>

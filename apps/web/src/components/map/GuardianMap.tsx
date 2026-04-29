@@ -75,6 +75,10 @@ export function GuardianMap(props: { demo: boolean; userLat?: number; userLng?: 
   const safeRouteRef = useRef<Polyline | null>(null);
   const safeRouteMarkersRef = useRef<CircleMarker[]>([]);
   const [ready, setReady] = useState(false);
+  const [destinationInput, setDestinationInput] = useState('');
+  const [isGettingRoute, setIsGettingRoute] = useState(false);
+  const [routeError, setRouteError] = useState('');
+  const [routeInfo, setRouteInfo] = useState({ distance: '', duration: '' });
 
   const { point } = useGeolocation();
   const { toggles } = useMapStore();
@@ -146,6 +150,144 @@ export function GuardianMap(props: { demo: boolean; userLat?: number; userLng?: 
     liveMarkerRef.current = null;
   }, [toggles.liveTracking]);
 
+  // Call geocoding and routing APIs for destination-based route
+  const fetchSafeRoute = async () => {
+    if (!destinationInput.trim() || !point || !mapRef.current) return;
+
+    const originLat = point.lat;
+    const originLng = point.lng;
+    const map = mapRef.current;
+
+    try {
+      // Step 1: Geocode the destination using Nominatim
+      const query = encodeURIComponent(destinationInput.trim());
+      const geoRes = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${query}&format=json&limit=1`
+      );
+      const geoData = await geoRes.json();
+
+      if (!geoData.length) {
+        setRouteError('Location not found. Try adding city name.');
+        return;
+      }
+
+      const destLat = parseFloat(geoData[0].lat);
+      const destLng = parseFloat(geoData[0].lon);
+      const destName = geoData[0].display_name || destinationInput;
+
+      // Step 2: Get real road route via OSRM
+      const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${originLng},${originLat};${destLng},${destLat}?overview=full&geometries=geojson`;
+      const routeRes = await fetch(osrmUrl);
+      const routeData = await routeRes.json();
+
+      if (!routeData.routes || !routeData.routes.length) {
+        throw new Error('No route found');
+      }
+
+      // Extract route data
+      const coordinates = routeData.routes[0].geometry.coordinates;
+      const latLngs = coordinates.map((coord: number[]) => [coord[1], coord[0]]);
+      const distanceKm = (routeData.routes[0].distance / 1000).toFixed(1);
+      const durationMin = Math.round(routeData.routes[0].duration / 60);
+
+      // Step 3: Draw route on map
+      // Remove existing route first
+      if (safeRouteRef.current) {
+        safeRouteRef.current.removeFrom(map);
+        safeRouteRef.current = null;
+      }
+      safeRouteMarkersRef.current.forEach(marker => marker.removeFrom(map));
+      safeRouteMarkersRef.current = [];
+
+      // Draw new polyline
+      const polyline = L.polyline(latLngs, {
+        color: '#22c55e',
+        weight: 5,
+        opacity: 0.85,
+        dashArray: '10 6'
+      }).addTo(map);
+      safeRouteRef.current = polyline;
+
+      // Fit map to show full route
+      map.fitBounds(L.polyline(latLngs).getBounds(), { padding: [60, 60] });
+
+      // Add origin marker (green)
+      const originMarker = L.circleMarker([originLat, originLng], {
+        radius: 8,
+        color: '#22c55e',
+        weight: 2,
+        fillColor: '#22c55e',
+        fillOpacity: 0.8
+      }).addTo(map).bindPopup('You are here');
+      safeRouteMarkersRef.current.push(originMarker);
+
+      // Add destination marker (red)
+      const destMarker = L.circleMarker([destLat, destLng], {
+        radius: 8,
+        color: '#ef4444',
+        weight: 2,
+        fillColor: '#ef4444',
+        fillOpacity: 0.8
+      }).addTo(map).bindPopup(destName);
+      safeRouteMarkersRef.current.push(destMarker);
+
+      // Step 4: Show route info
+      setRouteInfo({ distance: distanceKm, duration: durationMin.toString() });
+      setRouteError('');
+
+    } catch (error) {
+      console.warn('Route calculation failed:', error);
+      setRouteError('Route unavailable. Showing direct path.');
+      
+      // Fallback: draw straight line to approximate destination
+      const destLat = point.lat + 0.02;
+      const destLng = point.lng + 0.02;
+      
+      // Remove existing route first
+      if (safeRouteRef.current) {
+        safeRouteRef.current.removeFrom(map);
+        safeRouteRef.current = null;
+      }
+      safeRouteMarkersRef.current.forEach(marker => marker.removeFrom(map));
+      safeRouteMarkersRef.current = [];
+
+      // Draw fallback straight line
+      const coordinates: [number, number][] = [
+        [originLat, originLng],
+        [destLat, destLng]
+      ];
+      const polyline = L.polyline(coordinates, {
+        color: '#22c55e',
+        weight: 5,
+        opacity: 0.85,
+        dashArray: '10 6'
+      }).addTo(map);
+      safeRouteRef.current = polyline;
+
+      // Add origin marker
+      const originMarker = L.circleMarker([originLat, originLng], {
+        radius: 8,
+        color: '#22c55e',
+        weight: 2,
+        fillColor: '#22c55e',
+        fillOpacity: 0.8
+      }).addTo(map).bindPopup('You are here');
+      safeRouteMarkersRef.current.push(originMarker);
+
+      // Add destination marker
+      const destMarker = L.circleMarker([destLat, destLng], {
+        radius: 8,
+        color: '#ef4444',
+        weight: 2,
+        fillColor: '#ef4444',
+        fillOpacity: 0.8
+      }).addTo(map).bindPopup('Destination');
+      safeRouteMarkersRef.current.push(destMarker);
+    } finally {
+      setIsGettingRoute(false);
+    }
+  };
+
   // Safe Route effect
   useEffect(() => {
     const map = mapRef.current;
@@ -159,127 +301,14 @@ export function GuardianMap(props: { demo: boolean; userLat?: number; userLng?: 
     safeRouteMarkersRef.current.forEach(marker => marker.removeFrom(map));
     safeRouteMarkersRef.current = [];
 
-    if (!toggles.safeRoute) return;
-
-    // Call safe route API
-    const fetchSafeRoute = async () => {
-      try {
-        const response = await fetch('http://localhost:4000/api/ai/safe-route', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            originLat: point.lat,
-            originLng: point.lng,
-            destLat: point.lat + 0.02,
-            destLng: point.lng + 0.02
-          })
-        });
-        
-        if (response.ok) {
-          const routeData = await response.json();
-          if (routeData.route && routeData.route.length > 0) {
-            // Draw polyline from API response
-            const coordinates: [number, number][] = routeData.route.map((point: any) => [point.lat, point.lng]);
-            const polyline = L.polyline(coordinates, {
-              color: '#22c55e',
-              weight: 4,
-              opacity: 0.8,
-              dashArray: '8 4'
-            }).addTo(map);
-            safeRouteRef.current = polyline;
-
-            // Add origin marker
-            const originMarker = L.circleMarker([point.lat, point.lng], {
-              radius: 8,
-              color: '#22c55e',
-              weight: 2,
-              fillColor: '#22c55e',
-              fillOpacity: 0.8
-            }).addTo(map).bindTooltip('You');
-            safeRouteMarkersRef.current.push(originMarker);
-
-            // Add destination marker
-            const destMarker = L.circleMarker([point.lat + 0.02, point.lng + 0.02], {
-              radius: 8,
-              color: '#22c55e',
-              weight: 2,
-              fillColor: '#22c55e',
-              fillOpacity: 0.8
-            }).addTo(map).bindTooltip('Destination');
-            safeRouteMarkersRef.current.push(destMarker);
-          }
-        } else {
-          // Fallback: draw simple straight line
-          const coordinates = [
-            [point.lat, point.lng],
-            [point.lat + 0.02, point.lng + 0.02]
-          ];
-          const polyline = L.polyline(coordinates, {
-            color: '#22c55e',
-            weight: 4,
-            opacity: 0.8,
-            dashArray: '8 4'
-          }).addTo(map);
-          safeRouteRef.current = polyline;
-
-          // Add origin marker
-          const originMarker = L.circleMarker([point.lat, point.lng], {
-            radius: 8,
-            color: '#22c55e',
-            weight: 2,
-            fillColor: '#22c55e',
-            fillOpacity: 0.8
-          }).addTo(map).bindTooltip('You');
-          safeRouteMarkersRef.current.push(originMarker);
-
-          // Add destination marker
-          const destMarker = L.circleMarker([point.lat + 0.02, point.lng + 0.02], {
-            radius: 8,
-            color: '#22c55e',
-            weight: 2,
-            fillColor: '#22c55e',
-            fillOpacity: 0.8
-          }).addTo(map).bindTooltip('Destination');
-          safeRouteMarkersRef.current.push(destMarker);
-        }
-      } catch (error) {
-        console.error('Safe route API error:', error);
-        // Fallback: draw simple straight line
-        const coordinates: [number, number][] = [
-          [point.lat, point.lng],
-          [point.lat + 0.02, point.lng + 0.02]
-        ];
-        const polyline = L.polyline(coordinates, {
-          color: '#22c55e',
-          weight: 4,
-          opacity: 0.8,
-          dashArray: '8 4'
-        }).addTo(map);
-        safeRouteRef.current = polyline;
-
-        // Add origin marker
-        const originMarker = L.circleMarker([point.lat, point.lng], {
-          radius: 8,
-          color: '#22c55e',
-          weight: 2,
-          fillColor: '#22c55e',
-          fillOpacity: 0.8
-        }).addTo(map).bindTooltip('You');
-        safeRouteMarkersRef.current.push(originMarker);
-
-        // Add destination marker
-        const destMarker = L.circleMarker([point.lat + 0.02, point.lng + 0.02], {
-          radius: 8,
-          color: '#22c55e',
-          weight: 2,
-          fillColor: '#22c55e',
-          fillOpacity: 0.8
-        }).addTo(map).bindTooltip('Destination');
-        safeRouteMarkersRef.current.push(destMarker);
-      }
-    };
-
-    fetchSafeRoute();
+    if (!toggles.safeRoute) {
+      // Clean up state when toggle is OFF
+      setDestinationInput('');
+      setRouteError('');
+      setRouteInfo({ distance: '', duration: '' });
+      setIsGettingRoute(false);
+      return;
+    }
 
     return () => {
       if (safeRouteRef.current) {
@@ -303,6 +332,135 @@ export function GuardianMap(props: { demo: boolean; userLat?: number; userLng?: 
         <>
           {toggles.heatmap && <HeatmapLayer map={mapRef.current} demoData={demoZones ?? undefined} />}
           {toggles.incidents && <IncidentClusterLayer map={mapRef.current} />}
+
+          {/* Safe Route Destination Input Panel */}
+          {toggles.safeRoute && (
+            <div style={{
+              position: 'absolute',
+              top: '80px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              background: '#0d1520',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: '14px',
+              padding: '14px 16px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              width: 'fit-content',
+              maxWidth: '420px',
+              zIndex: 1000
+            }}>
+              {/* Origin Row */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  backgroundColor: '#22c55e'
+                }}></div>
+                <span style={{
+                  color: '#94a3b8',
+                  fontSize: '13px'
+                }}>Your Location</span>
+              </div>
+
+              {/* Divider */}
+              <div style={{
+                width: '1px',
+                height: '24px',
+                background: 'rgba(255,255,255,0.1)',
+                borderLeft: '1px dashed rgba(255,255,255,0.2)'
+              }}></div>
+
+              {/* Destination Row */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  backgroundColor: '#ef4444'
+                }}></div>
+                <input
+                  type="text"
+                  placeholder="Enter destination..."
+                  value={destinationInput}
+                  onChange={(e) => setDestinationInput(e.target.value)}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: 'white',
+                    fontSize: '14px',
+                    width: '260px',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+
+              {/* Get Route Button */}
+              <button
+                onClick={async () => {
+                  if (!destinationInput.trim() || !point) return;
+                  setIsGettingRoute(true);
+                  setRouteError('');
+                  setRouteInfo({ distance: '', duration: '' });
+                  await fetchSafeRoute();
+                }}
+                disabled={isGettingRoute || !destinationInput.trim()}
+                style={{
+                  background: isGettingRoute ? '#16a34a' : '#22c55e',
+                  color: 'white',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  padding: '8px 16px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  cursor: isGettingRoute ? 'not-allowed' : 'pointer',
+                  opacity: (isGettingRoute || !destinationInput.trim()) ? 0.7 : 1
+                }}
+              >
+                {isGettingRoute ? 'Finding safe route...' : 'Get Safe Route'}
+              </button>
+            </div>
+          )}
+
+          {/* Route Info Display */}
+          {toggles.safeRoute && routeInfo.distance && (
+            <div style={{
+              position: 'absolute',
+              top: '150px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              color: '#22c55e',
+              fontSize: '12px',
+              background: '#0d1520',
+              padding: '6px 12px',
+              borderRadius: '8px',
+              border: '1px solid rgba(34,197,94,0.2)',
+              zIndex: 999
+            }}>
+              Route found — {routeInfo.distance} km · ~{routeInfo.duration} min
+            </div>
+          )}
+
+          {/* Error Display */}
+          {toggles.safeRoute && routeError && (
+            <div style={{
+              position: 'absolute',
+              top: '150px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              color: '#ef4444',
+              fontSize: '12px',
+              background: '#0d1520',
+              padding: '6px 12px',
+              borderRadius: '8px',
+              border: '1px solid rgba(239,68,68,0.2)',
+              zIndex: 999
+            }}>
+              {routeError}
+            </div>
+          )}
 
           <div className="pointer-events-none absolute bottom-14 right-4 z-20 rounded-lg border border-guardian-border-subtle bg-guardian-bg-surface/95 p-3 text-xs text-guardian-text-secondary shadow-lg backdrop-blur">
             <div className="text-[11px] font-mono tracking-widest text-guardian-text-primary">

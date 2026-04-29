@@ -67,6 +67,24 @@ export function incidentsRouter(): Router {
     }
   });
 
+  r.patch('/:id/verify', async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+    const incident = await prisma.incident.update({
+      where: { id },
+      data: {
+        verifiedCount: { increment: 1 }
+      }
+    });
+    res.json({
+      verifiedCount: incident.verifiedCount,
+      isVerified: incident.verifiedCount >= 3
+    });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
   return r;
 }
 
