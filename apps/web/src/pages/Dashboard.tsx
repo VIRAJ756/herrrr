@@ -183,18 +183,45 @@ export default function Dashboard(props: { demo: boolean }): React.ReactElement 
   });
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-guardian-bg-base text-guardian-text-primary">
+    <div style={{
+      position: "relative",
+      height: "100vh",
+      width: "100vw",
+      overflow: "hidden",
+      background: "#0a0f1a",
+      fontFamily: "Inter, -apple-system, sans-serif"
+    }}>
       {demoMode ? <DemoBanner /> : null}
       <TopBar areaLabel={location} live={true} />
-      <div className="relative flex h-[calc(100vh-48px)]">
+      <div style={{
+        position: "relative",
+        display: "flex",
+        height: "calc(100vh - 48px)"
+      }}>
         <Sidebar />
-        <main className="relative flex-1 overflow-hidden">
+        <main style={{
+          position: "relative",
+          flex: 1,
+          overflow: "hidden"
+        }}>
           <GuardianMap demo={props.demo} userLat={point?.lat} userLng={point?.lng} />
 
           <LayerControls />
 
-          <div className="pointer-events-none absolute right-4 top-4 z-40 w-[280px]">
-            <div className="pointer-events-auto space-y-3">
+          <div style={{
+            pointerEvents: "none",
+            position: "absolute",
+            right: "16px",
+            top: "16px",
+            zIndex: 40,
+            width: "280px"
+          }}>
+            <div style={{
+              pointerEvents: "auto",
+              display: "flex",
+              flexDirection: "column",
+              gap: "12px"
+            }}>
               <AlertBanner alert={alert} onDismiss={dismiss} />
               <RiskScoreCard demo={props.demo} />
             </div>

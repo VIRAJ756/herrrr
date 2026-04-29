@@ -81,7 +81,22 @@ export function Sidebar(): React.ReactElement {
     >
       <div className="flex flex-col gap-1 px-3">
         <div className="mb-4 flex items-center gap-2 px-2">
-          <div className="h-8 w-8 rounded-full border border-gray-600 bg-gray-800" />
+          <img
+            src="/avatar.png"
+            alt="Profile"
+            style={{
+              width: '42px',
+              height: '42px',
+              minWidth: '42px',
+              minHeight: '42px',
+              borderRadius: '50%',
+              objectFit: 'cover',
+              objectPosition: 'center top',
+              border: '2px solid #22c55e',
+              display: 'block',
+              flexShrink: 0,
+            }}
+          />
         </div>
         <nav className="flex flex-col gap-1">
           {NAV.map((item) => {
@@ -107,19 +122,7 @@ export function Sidebar(): React.ReactElement {
         </nav>
       </div>
       <div className="mt-auto px-3">
-        <button
-          type="button"
-          className="fixed rounded-md border border-[var(--c-accent-safe)] bg-[rgba(45,212,160,0.08)] px-3 py-2.5 text-[13px] font-mono text-[var(--c-accent-safe)] hover:bg-[rgba(45,212,160,0.12)] focus:outline-none focus:ring-2 focus:ring-[var(--c-accent-safe)]"
-          style={{
-            bottom: "52px",
-            left: "16px",
-            width: "160px"
-          }}
-          aria-label="I'm Safe"
-        >
-          {t("btn.safe")}
-        </button>
-      </div>
+              </div>
     </aside>
   );
 }

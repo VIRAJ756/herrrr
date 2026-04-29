@@ -26,25 +26,57 @@ export default function Settings(): React.ReactElement {
   }, [demoModeEnabled]);
 
   return (
-    <main className="min-h-screen bg-guardian-bg-base pb-16 text-guardian-text-primary">
+    <main style={{
+      background: "#0a0f1a",
+      padding: "24px",
+      minHeight: "100vh",
+      fontFamily: "Inter, -apple-system, sans-serif"
+    }}>
       <DemoBanner />
-      <div className="mx-auto max-w-3xl px-6 py-10">
-        <div className="text-xs font-mono tracking-widest text-guardian-text-secondary">
+      <div className="mx-auto max-w-3xl">
+        <div style={{
+          fontSize: "13px",
+          fontWeight: 600,
+          letterSpacing: "0.1em",
+          color: "#4a5568",
+          marginBottom: "20px"
+        }}>
           SETTINGS
         </div>
-        <div className="mt-4 rounded-xl border border-guardian-border-subtle bg-guardian-bg-surface p-5">
-          <div className="text-sm text-guardian-text-secondary">
+        <div style={{
+          background: "#111827",
+          border: "1px solid #1e2d3d",
+          borderRadius: "16px",
+          padding: "24px",
+          boxShadow: "0 2px 12px rgba(0,0,0,0.4)"
+        }}>
+          <div style={{ fontSize: "14px", color: "#cbd5e1", fontWeight: 400 }}>
             Profile + fake-call customization + notification permissions.
           </div>
-          <div className="mt-4 grid gap-4">
+          <div style={{ marginTop: "16px" }}>
             <label className="block">
-              <div className="mb-2 text-xs font-mono tracking-widest text-guardian-text-secondary">
+              <div style={{
+                fontSize: "11px",
+                fontWeight: 600,
+                color: "#4a5568",
+                letterSpacing: "0.1em",
+                marginBottom: "8px"
+              }}>
                 FAKE CALLER NAME
               </div>
               <input
                 value={fakeCallerName}
                 onChange={(event) => setFakeCallerName(event.target.value)}
-                className="w-full rounded-md border border-guardian-border-subtle bg-guardian-bg-base p-3 text-sm outline-none focus:ring-2 focus:ring-guardian-border-accent"
+                style={{
+                  width: "100%",
+                  borderRadius: "10px",
+                  border: "1px solid #1e2d3d",
+                  background: "#0d1520",
+                  padding: "14px 16px",
+                  fontSize: "15px",
+                  color: "#ffffff",
+                  outline: "none"
+                }}
               />
             </label>
             <button
@@ -52,31 +84,96 @@ export default function Settings(): React.ReactElement {
               role="switch"
               aria-checked={voiceEnabled}
               onClick={() => setVoiceEnabled((value) => !value)}
-              className="flex items-center justify-between rounded-md border border-guardian-border-subtle bg-guardian-bg-base px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-guardian-border-accent"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                borderRadius: "12px",
+                border: "1px solid #1e2d3d",
+                background: "#111827",
+                padding: "16px 20px",
+                marginBottom: "8px",
+                cursor: "pointer"
+              }}
             >
-              <span>Voice activation: “Hey Guardian, SOS”</span>
-              <span className="font-mono text-guardian-text-secondary">
-                {voiceEnabled ? "ON" : "OFF"}
-              </span>
+              <span style={{ fontSize: "15px", color: "#ffffff", fontWeight: 400 }}>Voice activation: "Hey Guardian, SOS"</span>
+              <div style={{
+                width: "44px",
+                height: "24px",
+                borderRadius: "12px",
+                background: voiceEnabled ? "#22c55e" : "#1f2937",
+                position: "relative",
+                transition: "background-color 150ms"
+              }}>
+                <span style={{
+                  position: "absolute",
+                  top: "2px",
+                  left: voiceEnabled ? "22px" : "2px",
+                  width: "20px",
+                  height: "20px",
+                  borderRadius: "50%",
+                  background: "#ffffff",
+                  transition: "transform 150ms"
+                }}></span>
+              </div>
             </button>
             <button
               type="button"
               role="switch"
               aria-checked={demoModeEnabled}
               onClick={() => setDemoModeEnabled((value) => !value)}
-              className="flex items-center justify-between rounded-md border border-guardian-border-subtle bg-guardian-bg-base px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-guardian-border-accent"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                borderRadius: "12px",
+                border: "1px solid #1e2d3d",
+                background: "#111827",
+                padding: "16px 20px",
+                marginBottom: "8px",
+                cursor: "pointer"
+              }}
             >
-              <span>Demo mode</span>
-              <span className="font-mono text-guardian-text-secondary">
-                {demoModeEnabled ? "ON" : "OFF"}
-              </span>
+              <span style={{ fontSize: "15px", color: "#ffffff", fontWeight: 400 }}>Demo mode</span>
+              <div style={{
+                width: "44px",
+                height: "24px",
+                borderRadius: "12px",
+                background: demoModeEnabled ? "#22c55e" : "#1f2937",
+                position: "relative",
+                transition: "background-color 150ms"
+              }}>
+                <span style={{
+                  position: "absolute",
+                  top: "2px",
+                  left: demoModeEnabled ? "22px" : "2px",
+                  width: "20px",
+                  height: "20px",
+                  borderRadius: "50%",
+                  background: "#ffffff",
+                  transition: "transform 150ms"
+                }}></span>
+              </div>
             </button>
-            <div className="rounded-md border border-guardian-border-subtle bg-guardian-bg-base p-4">
-              <div className="text-xs font-mono tracking-widest text-guardian-text-secondary">
+            <div style={{
+              borderRadius: "12px",
+              border: "1px solid #1e2d3d",
+              background: "#111827",
+              padding: "16px 20px"
+            }}>
+              <div style={{
+                fontSize: "11px",
+                fontWeight: 600,
+                color: "#4a5568",
+                letterSpacing: "0.1em",
+                marginBottom: "8px"
+              }}>
                 ACCOUNT
               </div>
-              <div className="mt-2 text-sm">{user?.name ?? "Demo User"}</div>
-              <div className="text-sm text-guardian-text-secondary">
+              <div style={{ fontSize: "16px", fontWeight: 600, color: "#ffffff" }}>
+                {user?.name ?? "Demo User"}
+              </div>
+              <div style={{ fontSize: "14px", color: "#6b7280", marginTop: "2px" }}>
                 {user?.email ?? "demo@guardian.app"}
               </div>
               <button
@@ -85,7 +182,21 @@ export default function Settings(): React.ReactElement {
                   clearDemoUser();
                   navigate("/login");
                 }}
-                className="mt-3 w-full rounded-md border border-red-500/60 px-4 py-3 text-sm font-semibold text-red-300"
+                style={{
+                  width: "100%",
+                  height: "52px",
+                  background: "transparent",
+                  border: "1px solid #ef4444",
+                  color: "#ef4444",
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  borderRadius: "12px",
+                  marginTop: "12px",
+                  cursor: "pointer",
+                  transition: "background-color 150ms"
+                }}
+                onMouseOver={(e) => e.currentTarget.style.background = "rgba(239,68,68,0.08)"}
+                onMouseOut={(e) => e.currentTarget.style.background = "transparent"}
               >
                 Logout
               </button>

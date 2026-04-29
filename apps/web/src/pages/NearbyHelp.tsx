@@ -101,21 +101,49 @@ export default function NearbyHelp(): React.ReactElement {
   };
 
   return (
-    <div className="fixed inset-0 z-40 bg-[#0A0E17] md:relative md:bg-transparent md:flex-1">
-      <div className="h-full overflow-y-auto p-6">
-        <h1 className="text-2xl font-bold text-white mb-6">{t("nearby.title")}</h1>
+    <div style={{
+      position: "fixed",
+      inset: 0,
+      zIndex: 40,
+      background: "#0a0f1a",
+      fontFamily: "Inter, -apple-system, sans-serif"
+    }}>
+      <div style={{
+        height: "100%",
+        overflowY: "auto",
+        padding: "24px"
+      }}>
+        <h1 style={{
+          fontSize: "24px",
+          fontWeight: 800,
+          color: "#ffffff",
+          marginBottom: "20px"
+        }}>{t("nearby.title")}</h1>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6">
+        <div style={{
+          display: "flex",
+          gap: "8px",
+          marginBottom: "20px"
+        }}>
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeTab === tab.id
-                  ? "bg-[#00E5A0] text-black"
-                  : "bg-[#1A2235] text-[#94A3B8] hover:text-white"
-              }`}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "8px 16px",
+                borderRadius: "20px",
+                fontSize: "13px",
+                fontWeight: 500,
+                cursor: "pointer",
+                transition: "all 150ms ease",
+                background: activeTab === tab.id ? "#22c55e" : "#111827",
+                color: activeTab === tab.id ? "#0a0f1a" : "#6b7280",
+                border: activeTab === tab.id ? "none" : "1px solid #1e2d3d"
+              }}
             >
               <span>{tab.icon}</span>
               <span>{tab.label}</span>
@@ -125,90 +153,272 @@ export default function NearbyHelp(): React.ReactElement {
 
         {/* Notes */}
         {activeTab === "medical" && (
-          <div className="mb-4 p-3 rounded-md bg-[#1A2235] border border-[#00E5A0]/30 text-[#94A3B8] text-sm">
+          <div style={{
+            marginBottom: "16px",
+            padding: "14px 16px",
+            borderRadius: "10px",
+            background: "#111827",
+            border: "1px solid #1e2d3d",
+            borderLeft: "3px solid #22c55e",
+            fontSize: "13px",
+            color: "#94a3b8"
+          }}>
             💊 Many government hospitals provide free sanitary products. Ask at the reception.
           </div>
         )}
         {activeTab === "gov" && (
-          <div className="mb-4 p-3 rounded-md bg-[#1A2235] border border-[#00E5A0]/30 text-[#94A3B8] text-sm">
+          <div style={{
+            marginBottom: "16px",
+            padding: "14px 16px",
+            borderRadius: "10px",
+            background: "#111827",
+            border: "1px solid #1e2d3d",
+            borderLeft: "3px solid #22c55e",
+            fontSize: "13px",
+            color: "#94a3b8"
+          }}>
             🏛 Government centers may offer free sanitary pad schemes under national health programs.
           </div>
         )}
         {activeTab === "police" && (
-          <div className="mb-4 space-y-2">
-            <div className="p-3 rounded-md bg-[#1A2235] border border-[#FF3B5C]/30 text-[#94A3B8] text-sm flex items-center justify-between">
+          <div style={{ marginBottom: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
+            <div style={{
+              padding: "14px 16px",
+              borderRadius: "10px",
+              background: "#111827",
+              border: "1px solid #1e2d3d",
+              borderLeft: "3px solid #ef4444",
+              fontSize: "13px",
+              color: "#94a3b8",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between"
+            }}>
               <span>🚔 {t("emergency.police")}: 100</span>
-              <a href="tel:100" className="px-3 py-1 rounded-md bg-[#00E5A0] text-black text-xs font-medium hover:bg-[#00E5A0]/80">{t("nearby.call")}</a>
+              <a href="tel:100" style={{
+                padding: "6px 12px",
+                borderRadius: "8px",
+                background: "#22c55e",
+                color: "#0a0f1a",
+                fontSize: "12px",
+                fontWeight: 500,
+                cursor: "pointer",
+                textDecoration: "none",
+                transition: "background-color 150ms"
+              }}
+              onMouseOver={(e) => e.currentTarget.style.background = "#16a34a"}
+              onMouseOut={(e) => e.currentTarget.style.background = "#22c55e"}
+              >{t("nearby.call")}</a>
             </div>
-            <div className="p-3 rounded-md bg-[#1A2235] border border-[#FF3B5C]/30 text-[#94A3B8] text-sm flex items-center justify-between">
+            <div style={{
+              padding: "14px 16px",
+              borderRadius: "10px",
+              background: "#111827",
+              border: "1px solid #1e2d3d",
+              borderLeft: "3px solid #ef4444",
+              fontSize: "13px",
+              color: "#94a3b8",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between"
+            }}>
               <span>🚑 {t("emergency.ambulance")}: 108</span>
-              <a href="tel:108" className="px-3 py-1 rounded-md bg-[#00E5A0] text-black text-xs font-medium hover:bg-[#00E5A0]/80">{t("nearby.call")}</a>
+              <a href="tel:108" style={{
+                padding: "6px 12px",
+                borderRadius: "8px",
+                background: "#22c55e",
+                color: "#0a0f1a",
+                fontSize: "12px",
+                fontWeight: 500,
+                cursor: "pointer",
+                textDecoration: "none",
+                transition: "background-color 150ms"
+              }}
+              onMouseOver={(e) => e.currentTarget.style.background = "#16a34a"}
+              onMouseOut={(e) => e.currentTarget.style.background = "#22c55e"}
+              >{t("nearby.call")}</a>
             </div>
-            <div className="p-3 rounded-md bg-[#1A2235] border border-[#FF3B5C]/30 text-[#94A3B8] text-sm flex items-center justify-between">
+            <div style={{
+              padding: "14px 16px",
+              borderRadius: "10px",
+              background: "#111827",
+              border: "1px solid #1e2d3d",
+              borderLeft: "3px solid #ef4444",
+              fontSize: "13px",
+              color: "#94a3b8",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between"
+            }}>
               <span>🔥 {t("emergency.fire")}: 101</span>
-              <a href="tel:101" className="px-3 py-1 rounded-md bg-[#00E5A0] text-black text-xs font-medium hover:bg-[#00E5A0]/80">{t("nearby.call")}</a>
+              <a href="tel:101" style={{
+                padding: "6px 12px",
+                borderRadius: "8px",
+                background: "#22c55e",
+                color: "#0a0f1a",
+                fontSize: "12px",
+                fontWeight: 500,
+                cursor: "pointer",
+                textDecoration: "none",
+                transition: "background-color 150ms"
+              }}
+              onMouseOver={(e) => e.currentTarget.style.background = "#16a34a"}
+              onMouseOut={(e) => e.currentTarget.style.background = "#22c55e"}
+              >{t("nearby.call")}</a>
             </div>
-            <div className="p-3 rounded-md bg-[#1A2235] border border-[#FF3B5C]/30 text-[#94A3B8] text-sm flex items-center justify-between">
+            <div style={{
+              padding: "14px 16px",
+              borderRadius: "10px",
+              background: "#111827",
+              border: "1px solid #1e2d3d",
+              borderLeft: "3px solid #ef4444",
+              fontSize: "13px",
+              color: "#94a3b8",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between"
+            }}>
               <span>🆘 {t("emergency.women")}: 1091</span>
-              <a href="tel:1091" className="px-3 py-1 rounded-md bg-[#00E5A0] text-black text-xs font-medium hover:bg-[#00E5A0]/80">{t("nearby.call")}</a>
+              <a href="tel:1091" style={{
+                padding: "6px 12px",
+                borderRadius: "8px",
+                background: "#22c55e",
+                color: "#0a0f1a",
+                fontSize: "12px",
+                fontWeight: 500,
+                cursor: "pointer",
+                textDecoration: "none",
+                transition: "background-color 150ms"
+              }}
+              onMouseOver={(e) => e.currentTarget.style.background = "#16a34a"}
+              onMouseOut={(e) => e.currentTarget.style.background = "#22c55e"}
+              >{t("nearby.call")}</a>
             </div>
           </div>
         )}
 
         {/* Loading */}
         {loading && (
-          <div className="space-y-3">
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-20 rounded-md bg-[#1A2235] animate-pulse" />
+              <div key={i} style={{
+                height: "80px",
+                borderRadius: "12px",
+                background: "#0d1520",
+                animation: "pulse 2s infinite"
+              }} />
             ))}
           </div>
         )}
 
         {/* Error */}
         {error && (
-          <div className="p-4 rounded-md bg-red-900/30 border border-red-500/50 text-red-200">
+          <div style={{
+            padding: "14px 16px",
+            borderRadius: "10px",
+            background: "rgba(239,68,68,0.1)",
+            border: "1px solid rgba(239,68,68,0.3)",
+            color: "#fca5a5",
+            fontSize: "13px"
+          }}>
             {error}
           </div>
         )}
 
         {/* Results */}
         {!loading && !error && places.length === 0 && (
-          <div className="p-4 rounded-md bg-[#1A2235] text-[#94A3B8]">
+          <div style={{
+            padding: "16px 20px",
+            borderRadius: "12px",
+            background: "#111827",
+            border: "1px solid #1e2d3d",
+            fontSize: "14px",
+            color: "#cbd5e1"
+          }}>
             No results found nearby. Try expanding your search area.
           </div>
         )}
 
         {!loading && !error && places.length > 0 && (
-          <div className="space-y-3">
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             {places.map((place) => (
               <div
                 key={place.id}
-                className="p-4 rounded-md bg-[#0F1520] border border-gray-800"
+                style={{
+                  padding: "16px 20px",
+                  borderRadius: "12px",
+                  background: "#111827",
+                  border: "1px solid #1e2d3d"
+                }}
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1">
-                    <h3 className="text-white font-medium mb-1">{place.name}</h3>
-                    <p className="text-[#94A3B8] text-sm mb-1">
+                <div style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "space-between",
+                  gap: "12px"
+                }}>
+                  <div style={{ flex: 1 }}>
+                    <h3 style={{
+                      color: "#ffffff",
+                      fontWeight: 600,
+                      fontSize: "16px",
+                      marginBottom: "4px"
+                    }}>{place.name}</h3>
+                    <p style={{
+                      color: "#94a3b8",
+                      fontSize: "13px",
+                      marginBottom: "4px"
+                    }}>
                       {place.distance < 1000
                         ? `${Math.round(place.distance)}m away`
                         : `${(place.distance / 1000).toFixed(1)}km away`}
                     </p>
                     {place.address && (
-                      <p className="text-[#4B5563] text-xs">{place.address}</p>
+                      <p style={{ color: "#6b7280", fontSize: "12px" }}>{place.address}</p>
                     )}
                   </div>
-                  <div className="flex gap-2">
+                  <div style={{ display: "flex", gap: "8px" }}>
                     {place.phone && (
                       <a
                         href={`tel:${place.phone}`}
-                        className="px-3 py-1.5 rounded-md bg-[#00E5A0] text-black text-xs font-medium hover:bg-[#00E5A0]/80 transition-colors"
+                        style={{
+                          padding: "6px 14px",
+                          borderRadius: "8px",
+                          background: "#22c55e",
+                          color: "#0a0f1a",
+                          fontSize: "12px",
+                          fontWeight: 500,
+                          cursor: "pointer",
+                          textDecoration: "none",
+                          transition: "background-color 150ms"
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.background = "#16a34a"}
+                        onMouseOut={(e) => e.currentTarget.style.background = "#22c55e"}
                       >
                         {t("nearby.call")}
                       </a>
                     )}
                     <button
                       onClick={() => handleGetDirections(place.lat, place.lng)}
-                      className="px-3 py-1.5 rounded-md bg-[#1A2235] text-[#94A3B8] border border-gray-700 text-xs font-medium hover:bg-[#1A2235]/80 transition-colors"
+                      style={{
+                        padding: "6px 14px",
+                        borderRadius: "8px",
+                        background: "transparent",
+                        border: "1px solid #1e2d3d",
+                        color: "#cbd5e1",
+                        fontSize: "12px",
+                        fontWeight: 500,
+                        cursor: "pointer",
+                        transition: "all 150ms"
+                      }}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.borderColor = "#22c55e";
+                        e.currentTarget.style.color = "#22c55e";
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.borderColor = "#1e2d3d";
+                        e.currentTarget.style.color = "#cbd5e1";
+                      }}
                     >
                       {t("nearby.directions")}
                     </button>

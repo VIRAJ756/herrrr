@@ -78,38 +78,142 @@ export default function Login(): React.ReactElement {
   }
 
   return (
-    <main className="min-h-screen bg-[#0a0f1e] text-[#f8fafc]">
-      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-4 py-8">
-        <div className="mb-6 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl border border-white/15 bg-[#1a2235]">
+    <div
+      style={{
+        position: 'relative',
+        minHeight: '100vh',
+        width: '100%',
+        overflow: 'hidden',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      {/* Full screen background image */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 0,
+          backgroundImage: 'url("/login-bg.jpg")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center center',
+          backgroundRepeat: 'no-repeat',
+          width: '100%',
+          height: '100%',
+        }}
+      />
+
+      {/* Dark overlay */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 1,
+          background: 'rgba(8, 10, 20, 0.72)',
+        }}
+      />
+
+      {/* Login content above background */}
+      <div
+        style={{
+          position: 'relative',
+          zIndex: 2,
+          width: '100%',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '24px',
+        }}
+      >
+        <main style={{
+          background: "transparent",
+          color: "#f8fafc",
+          fontFamily: "Inter, -apple-system, sans-serif"
+        }}>
+          <div style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            width: "100%",
+            maxWidth: "448px",
+            margin: "0 auto",
+            minHeight: "100vh",
+            padding: "32px 16px"
+          }}>
+        <div style={{
+          textAlign: "center",
+          marginBottom: "24px"
+        }}>
+          <div style={{
+            margin: "0 auto 12px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "48px",
+            height: "48px",
+            borderRadius: "12px",
+            border: "1px solid rgba(255,255,255,0.15)",
+            background: "#111827"
+          }}>
             <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 2l7 3v6c0 5.2-3.3 9.8-7 11-3.7-1.2-7-5.8-7-11V5l7-3z" fill="#06b6d4" />
             </svg>
           </div>
-          <h1 className="text-2xl font-semibold">Guardian</h1>
-          <p className="mt-1 text-sm text-slate-400">Your personal safety companion</p>
+          <h1 style={{ fontSize: "24px", fontWeight: 600 }}>Guardian</h1>
+          <p style={{ marginTop: "4px", fontSize: "14px", color: "#94a3b8" }}>Your personal safety companion</p>
         </div>
 
-        <section className="rounded-xl border border-white/10 bg-[#111827] p-4 shadow-xl">
-          <div className="mb-4 grid grid-cols-2 rounded-lg bg-[#0f172a] p-1">
+        <section style={{
+          borderRadius: "12px",
+          border: "1px solid rgba(255,255,255,0.08)",
+          background: "rgba(17, 24, 39, 0.85)",
+          padding: "16px",
+          boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+          backdropFilter: "blur(2px)"
+        }}>
+          <div style={{
+            marginBottom: "16px",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            borderRadius: "8px",
+            background: "#0f172a",
+            padding: "4px"
+          }}>
             <button
               type="button"
               onClick={() => setTab("signin")}
-              className={`rounded-md px-3 py-2 text-sm transition ${isSignIn ? "bg-[#06b6d4] text-[#001018]" : "text-slate-300"}`}
+              style={{
+                borderRadius: "6px",
+                padding: "8px 12px",
+                fontSize: "14px",
+                transition: "all 150ms",
+                background: isSignIn ? "#22c55e" : "transparent",
+                color: isSignIn ? "#0a0f1a" : "#cbd5e1"
+              }}
             >
               Sign In
             </button>
             <button
               type="button"
               onClick={() => setTab("signup")}
-              className={`rounded-md px-3 py-2 text-sm transition ${!isSignIn ? "bg-[#06b6d4] text-[#001018]" : "text-slate-300"}`}
+              style={{
+                borderRadius: "6px",
+                padding: "8px 12px",
+                fontSize: "14px",
+                transition: "all 150ms",
+                background: !isSignIn ? "#22c55e" : "transparent",
+                color: !isSignIn ? "#0a0f1a" : "#cbd5e1"
+              }}
             >
               Sign Up
             </button>
           </div>
 
-          <div className="space-y-3">
-            <h2 className="text-sm font-semibold">{title}</h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <h2 style={{ fontSize: "14px", fontWeight: 600 }}>{title}</h2>
             {isSignIn ? (
               <>
                 <Field label="Email" value={signinEmail} onChange={setSigninEmail} type="email" />
@@ -138,18 +242,34 @@ export default function Login(): React.ReactElement {
             )}
             <button
               type="button"
-              className="h-12 w-full rounded-lg border border-[#06b6d4]/50 text-sm font-semibold text-[#7dd3fc]"
+              style={{
+                height: "48px",
+                width: "100%",
+                borderRadius: "8px",
+                border: "1px solid rgba(34,197,94,0.5)",
+                fontSize: "14px",
+                fontWeight: 600,
+                color: "#7dd3fc",
+                cursor: "pointer",
+                background: "transparent"
+              }}
               onClick={continueGuest}
             >
               Continue as Guest (Demo)
             </button>
-            <p className="text-center text-xs text-slate-400">
+            <p style={{
+              textAlign: "center",
+              fontSize: "12px",
+              color: "#94a3b8"
+            }}>
               Demo mode - no real account needed. Firebase auth coming soon.
             </p>
           </div>
         </section>
+          </div>
+        </main>
       </div>
-    </main>
+    </div>
   );
 }
 
@@ -160,13 +280,28 @@ function Field(props: {
   type?: string;
 }): React.ReactElement {
   return (
-    <label className="block">
-      <span className="mb-1 block text-xs text-slate-300">{props.label}</span>
+    <label style={{ display: "block" }}>
+      <span style={{
+        display: "block",
+        marginBottom: "4px",
+        fontSize: "12px",
+        color: "#cbd5e1"
+      }}>{props.label}</span>
       <input
         type={props.type ?? "text"}
         value={props.value}
         onChange={(event) => props.onChange(event.target.value)}
-        className="h-12 w-full rounded-lg border border-white/10 bg-[#0b1220] px-3 text-sm outline-none focus:border-[#06b6d4]"
+        style={{
+          height: "48px",
+          width: "100%",
+          borderRadius: "8px",
+          border: "1px solid rgba(255,255,255,0.1)",
+          background: "#0d1520",
+          padding: "0 12px",
+          fontSize: "14px",
+          color: "#ffffff",
+          outline: "none"
+        }}
       />
     </label>
   );
@@ -182,7 +317,17 @@ function PrimaryButton(props: {
       type="button"
       onClick={props.onClick}
       disabled={props.loading}
-      className="h-12 w-full rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 text-sm font-semibold text-white disabled:opacity-70"
+      style={{
+        height: "48px",
+        width: "100%",
+        borderRadius: "8px",
+        background: "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)",
+        fontSize: "14px",
+        fontWeight: 600,
+        color: "#ffffff",
+        cursor: props.loading ? "not-allowed" : "pointer",
+        opacity: props.loading ? 0.7 : 1
+      }}
     >
       {props.loading ? "Processing..." : props.text}
     </button>
@@ -190,6 +335,6 @@ function PrimaryButton(props: {
 }
 
 function ErrorText(props: { text: string }): React.ReactElement {
-  return <div className="-mt-1 text-xs text-red-400">{props.text}</div>;
+  return <div style={{ marginTop: "-4px", fontSize: "12px", color: "#f87171" }}>{props.text}</div>;
 }
 

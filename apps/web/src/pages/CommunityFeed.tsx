@@ -182,40 +182,75 @@ export default function CommunityFeed(): React.ReactElement {
   }, [filter, incidentsQuery.data]);
 
   return (
-    <main className="min-h-screen bg-guardian-bg-base pb-16 text-guardian-text-primary">
+    <main style={{
+      background: "#0a0f1a",
+      padding: "24px",
+      minHeight: "100vh",
+      fontFamily: "Inter, -apple-system, sans-serif"
+    }}>
       <DemoBanner />
-      <div className="mx-auto max-w-4xl px-6 py-10">
-        <div className="text-xs font-mono tracking-widest text-guardian-text-secondary">
+      <div className="mx-auto max-w-4xl">
+        <div style={{
+          fontSize: "13px",
+          fontWeight: 600,
+          letterSpacing: "0.1em",
+          color: "#4a5568",
+          marginBottom: "20px"
+        }}>
           COMMUNITY / INTEL FEED
         </div>
 
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "8px",
+          marginBottom: "16px"
+        }}>
           {FILTERS.map((item) => (
             <button
               key={item.id}
               type="button"
               onClick={() => setFilter(item.id)}
-              className={[
-                "rounded-full border px-3 py-2 text-xs font-mono",
-                filter === item.id
-                  ? "border-guardian-border-accent bg-guardian-bg-elevated text-guardian-text-primary"
-                  : "border-guardian-border-subtle bg-guardian-bg-surface text-guardian-text-secondary",
-              ].join(" ")}
+              style={{
+                borderRadius: "20px",
+                padding: "8px 16px",
+                fontSize: "13px",
+                fontWeight: 500,
+                cursor: "pointer",
+                transition: "all 150ms ease",
+                background: filter === item.id ? "#22c55e" : "#111827",
+                color: filter === item.id ? "#0a0f1a" : "#6b7280",
+                border: filter === item.id ? "none" : "1px solid #1e2d3d"
+              }}
             >
               {item.label}
             </button>
           ))}
         </div>
 
-        <div className="mt-4 space-y-3">
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           {incidentsQuery.isLoading ? (
-            <div className="rounded-xl border border-guardian-border-subtle bg-guardian-bg-surface p-4 text-sm text-guardian-text-secondary">
+            <div style={{
+              borderRadius: "16px",
+              border: "1px solid #1e2d3d",
+              background: "#111827",
+              padding: "16px 20px",
+              fontSize: "14px",
+              color: "#cbd5e1"
+            }}>
               Loading incidents…
             </div>
           ) : null}
 
           {incidentsQuery.isError ? (
-            <div className="rounded-xl border border-guardian-border-subtle bg-guardian-bg-surface p-4 text-sm text-guardian-signal-danger">
+            <div style={{
+              borderRadius: "16px",
+              border: "1px solid #1e2d3d",
+              background: "#111827",
+              padding: "16px 20px",
+              fontSize: "14px",
+              color: "#ef4444"
+            }}>
               {incidentsQuery.error instanceof Error
                 ? incidentsQuery.error.message
                 : "Failed to load incidents."}
@@ -232,33 +267,58 @@ export default function CommunityFeed(): React.ReactElement {
             let bgStyle = {};
 
             if (isVerified) {
-              borderStyle = { borderLeft: "2px solid rgba(0,229,160,0.4)" };
-              bgStyle = { background: "rgba(0,229,160,0.02)" };
+              borderStyle = { borderLeft: "2px solid rgba(34,197,94,0.4)" };
+              bgStyle = { background: "rgba(34,197,94,0.02)" };
             } else if (isHighSeverity) {
               borderStyle = { borderLeft: "2px solid rgba(255,59,92,0.3)" };
-              bgStyle = { background: "#0F1520" };
+              bgStyle = { background: "#0d1520" };
             } else {
               borderStyle = { borderLeft: "2px solid rgba(148,163,184,0.1)" };
-              bgStyle = { background: "#0F1520" };
+              bgStyle = { background: "#0d1520" };
             }
 
             return (
               <article
                 key={incident.id}
-                className="rounded-xl border border-guardian-border-subtle p-4"
-                style={{ ...borderStyle, ...bgStyle }}
+                style={{
+                  borderRadius: "16px",
+                  border: "1px solid #1e2d3d",
+                  padding: "16px 20px",
+                  ...borderStyle,
+                  ...bgStyle
+                }}
               >
-                <div className="flex items-center justify-between">
-                  <div className="text-sm font-semibold">⚡ {incident.type}</div>
-                  <span className="rounded-full border border-guardian-border-default bg-guardian-bg-elevated px-2 py-1 text-[11px] font-mono text-guardian-text-secondary">
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between"
+                }}>
+                  <div style={{ fontSize: "14px", fontWeight: 600, color: "#ffffff" }}>⚡ {incident.type}</div>
+                  <span style={{
+                    borderRadius: "20px",
+                    border: "1px solid #1e2d3d",
+                    background: "#111827",
+                    padding: "4px 8px",
+                    fontSize: "11px",
+                    fontWeight: 500,
+                    color: "#cbd5e1"
+                  }}>
                     {severityTone(incident.severity)}
                   </span>
                 </div>
-                <div className="mt-1 text-xs text-guardian-text-secondary">
+                <div style={{
+                  fontSize: "12px",
+                  color: "#6b7280",
+                  marginTop: "4px"
+                }}>
                   {incident.latitude.toFixed(3)}, {incident.longitude.toFixed(3)} ·{" "}
                   {relativeTime(incident.createdAt)}
                 </div>
-                <div className="mt-2 text-sm text-guardian-text-secondary">
+                <div style={{
+                  fontSize: "14px",
+                  color: "#cbd5e1",
+                  marginTop: "8px"
+                }}>
                   {incident.description?.trim() || "No additional description provided."}
                 </div>
                 <ReactionBar
@@ -270,7 +330,14 @@ export default function CommunityFeed(): React.ReactElement {
             );
           })}
           {!incidentsQuery.isLoading && filteredIncidents.length === 0 ? (
-            <div className="rounded-xl border border-guardian-border-subtle bg-guardian-bg-surface p-4 text-sm text-guardian-text-secondary">
+            <div style={{
+              borderRadius: "16px",
+              border: "1px solid #1e2d3d",
+              background: "#111827",
+              padding: "16px 20px",
+              fontSize: "14px",
+              color: "#cbd5e1"
+            }}>
               No incidents match this filter yet.
             </div>
           ) : null}

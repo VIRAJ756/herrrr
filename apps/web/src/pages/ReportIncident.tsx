@@ -25,12 +25,17 @@ function Pill(props: {
   return (
     <button
       type="button"
-      className={[
-        "rounded-full border px-3 py-2 text-xs font-mono",
-        props.active
-          ? "border-guardian-border-accent bg-guardian-bg-elevated text-guardian-text-primary shadow-[var(--g-glow-safe)]"
-          : "border-guardian-border-subtle bg-guardian-bg-surface text-guardian-text-secondary hover:bg-guardian-bg-elevated"
-      ].join(" ")}
+      style={{
+        borderRadius: "20px",
+        padding: "8px 16px",
+        fontSize: "13px",
+        fontWeight: 500,
+        cursor: "pointer",
+        transition: "all 150ms ease",
+        background: props.active ? "#22c55e" : "#111827",
+        color: props.active ? "#0a0f1a" : "#6b7280",
+        border: props.active ? "none" : "1px solid #1e2d3d"
+      }}
       onClick={props.onClick}
     >
       {props.children}
@@ -96,18 +101,45 @@ export default function ReportIncident(): React.ReactElement {
   }
 
   return (
-    <main className="min-h-screen bg-guardian-bg-base pb-16 text-guardian-text-primary">
+    <main style={{
+      background: "#0a0f1a",
+      padding: "24px",
+      minHeight: "100vh",
+      fontFamily: "Inter, -apple-system, sans-serif"
+    }}>
       <DemoBanner />
-      <div className="mx-auto max-w-xl px-6 py-10">
-        <div className="text-xs font-mono tracking-widest text-guardian-text-secondary">
+      <div className="mx-auto max-w-xl">
+        <div style={{
+          fontSize: "13px",
+          fontWeight: 600,
+          letterSpacing: "0.1em",
+          color: "#4a5568",
+          marginBottom: "20px"
+        }}>
           NEW FIELD REPORT
         </div>
 
-        <section className="mt-4 rounded-xl border border-guardian-border-subtle bg-guardian-bg-surface p-5">
-          <div className="text-[11px] font-mono tracking-widest text-guardian-text-secondary">
+        <section style={{
+          background: "#111827",
+          border: "1px solid #1e2d3d",
+          borderRadius: "16px",
+          padding: "24px",
+          boxShadow: "0 2px 12px rgba(0,0,0,0.4)"
+        }}>
+          <div style={{
+            fontSize: "11px",
+            fontWeight: 600,
+            color: "#4a5568",
+            letterSpacing: "0.1em"
+          }}>
             INCIDENT TYPE
           </div>
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div style={{
+            marginTop: "12px",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "8px"
+          }}>
             {TYPES.map((t) => (
               <Pill key={t.type} active={t.type === type} onClick={() => setType(t.type)}>
                 {t.label}
@@ -115,11 +147,21 @@ export default function ReportIncident(): React.ReactElement {
             ))}
           </div>
 
-          <div className="mt-6 text-[11px] font-mono tracking-widest text-guardian-text-secondary">
-            SEVERITY <span className="ml-2 text-guardian-text-primary">{severityLabel}</span>
+          <div style={{
+            marginTop: "24px",
+            fontSize: "11px",
+            fontWeight: 600,
+            color: "#4a5568",
+            letterSpacing: "0.1em"
+          }}>
+            SEVERITY <span style={{ marginLeft: "8px", color: "#cbd5e1" }}>{severityLabel}</span>
           </div>
           <input
-            className="mt-3 w-full accent-[var(--g-signal-safe)]"
+            style={{
+              marginTop: "12px",
+              width: "100%",
+              accentColor: "#22c55e"
+            }}
             type="range"
             min={1}
             max={5}
@@ -128,65 +170,146 @@ export default function ReportIncident(): React.ReactElement {
             aria-label="Severity"
           />
 
-          <div className="mt-6 text-[11px] font-mono tracking-widest text-guardian-text-secondary">
+          <div style={{
+            marginTop: "24px",
+            fontSize: "11px",
+            fontWeight: 600,
+            color: "#4a5568",
+            letterSpacing: "0.1em"
+          }}>
             LOCATION
           </div>
-          <div className="mt-3 rounded-md border border-guardian-border-subtle bg-guardian-bg-elevated/30 p-3">
+          <div style={{
+            marginTop: "12px",
+            borderRadius: "12px",
+            border: "1px solid #1e2d3d",
+            background: "#0d1520",
+            padding: "16px 18px"
+          }}>
             <button
               type="button"
-              className="rounded-md border border-guardian-border-default bg-guardian-bg-surface px-3 py-2 text-xs font-mono text-guardian-signal-safe focus:outline-none focus:ring-2 focus:ring-guardian-border-accent disabled:cursor-not-allowed disabled:opacity-50"
+              style={{
+                borderRadius: "8px",
+                border: "1px solid #1e2d3d",
+                background: "#111827",
+                padding: "6px 12px",
+                fontSize: "12px",
+                fontWeight: 500,
+                color: "#22c55e",
+                cursor: "pointer",
+                outline: "none"
+              }}
               onClick={() => void handleUseCurrentLocation()}
               disabled={!isSupported}
             >
               📍 USE CURRENT LOCATION
             </button>
-            <div className="mt-2 text-sm text-guardian-text-secondary">
+            <div style={{
+              marginTop: "8px",
+              fontSize: "13px",
+              color: "#6b7280"
+            }}>
               {locationLabel}
             </div>
             {geoError ? (
-              <div className="mt-1 text-xs text-guardian-signal-danger">{geoError}</div>
+              <div style={{ marginTop: "4px", fontSize: "11px", color: "#ef4444" }}>{geoError}</div>
             ) : null}
           </div>
 
-          <div className="mt-6 text-[11px] font-mono tracking-widest text-guardian-text-secondary">
+          <div style={{
+            marginTop: "24px",
+            fontSize: "11px",
+            fontWeight: 600,
+            color: "#4a5568",
+            letterSpacing: "0.1em"
+          }}>
             DESCRIPTION (OPTIONAL)
           </div>
           <textarea
-            className="mt-3 w-full resize-none rounded-md border border-guardian-border-subtle bg-guardian-bg-base p-3 text-sm text-guardian-text-primary outline-none focus:ring-2 focus:ring-guardian-border-accent"
+            style={{
+              marginTop: "12px",
+              width: "100%",
+              resize: "none",
+              borderRadius: "10px",
+              border: "1px solid #1e2d3d",
+              background: "#0d1520",
+              padding: "14px 16px",
+              fontSize: "15px",
+              color: "#ffffff",
+              outline: "none"
+            }}
             rows={4}
             value={desc}
             onChange={(e) => setDesc(e.target.value)}
             placeholder="Add context that helps others avoid danger…"
           />
 
-          <div className="mt-6 flex items-center justify-between rounded-md border border-guardian-border-subtle bg-guardian-bg-elevated/30 px-3 py-3">
-            <div className="text-sm">Anonymous Report</div>
+          <div style={{
+            marginTop: "24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            borderRadius: "12px",
+            border: "1px solid #1e2d3d",
+            background: "#0d1520",
+            padding: "16px 20px"
+          }}>
+            <div style={{ fontSize: "15px", color: "#ffffff", fontWeight: 400 }}>Anonymous Report</div>
             <button
               type="button"
               role="switch"
               aria-checked={anon}
               onClick={() => setAnon(!anon)}
-              className="h-5 w-10 rounded-full border border-guardian-border-default bg-guardian-bg-surface p-[2px] focus:outline-none focus:ring-2 focus:ring-guardian-border-accent"
+              style={{
+                width: "44px",
+                height: "24px",
+                borderRadius: "12px",
+                background: anon ? "#22c55e" : "#1f2937",
+                position: "relative",
+                cursor: "pointer",
+                outline: "none",
+                padding: "2px"
+              }}
             >
               <span
-                className={[
-                  "block h-4 w-4 rounded-full transition-transform",
-                  anon ? "translate-x-5 bg-guardian-signal-safe" : "translate-x-0 bg-guardian-text-muted"
-                ].join(" ")}
+                style={{
+                  display: "block",
+                  width: "20px",
+                  height: "20px",
+                  borderRadius: "50%",
+                  background: "#ffffff",
+                  transform: anon ? "translateX(20px)" : "translateX(0)",
+                  transition: "transform 150ms"
+                }}
               />
             </button>
           </div>
 
           <button
             type="button"
-            className="mt-6 w-full rounded-md bg-guardian-signal-safe px-4 py-3 text-sm font-semibold text-guardian-text-inverse shadow-[var(--g-glow-safe)] focus:outline-none focus:ring-2 focus:ring-guardian-signal-safe/60 disabled:cursor-not-allowed disabled:opacity-60"
+            style={{
+              width: "100%",
+              height: "52px",
+              background: "#22c55e",
+              color: "#0a0f1a",
+              fontSize: "15px",
+              fontWeight: 700,
+              letterSpacing: "0.06em",
+              borderRadius: "12px",
+              border: "none",
+              marginTop: "24px",
+              cursor: "pointer",
+              transition: "background-color 150ms"
+            }}
             onClick={() => submitMutation.mutate()}
             disabled={submitMutation.isPending}
+            onMouseOver={(e) => e.currentTarget.style.background = "#16a34a"}
+            onMouseOut={(e) => e.currentTarget.style.background = "#22c55e"}
           >
             {submitMutation.isPending ? "SUBMITTING…" : "SUBMIT REPORT →"}
           </button>
           {submitMutation.isError ? (
-            <div className="mt-3 text-sm text-guardian-signal-danger">
+            <div style={{ marginTop: "12px", fontSize: "13px", color: "#ef4444" }}>
               {submitMutation.error instanceof Error
                 ? submitMutation.error.message
                 : "Failed to submit report."}

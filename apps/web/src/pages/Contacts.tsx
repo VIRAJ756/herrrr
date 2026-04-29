@@ -65,38 +65,92 @@ export default function Contacts(): React.ReactElement {
   });
 
   return (
-    <main className="min-h-screen bg-guardian-bg-base pb-16 text-guardian-text-primary">
+    <main style={{
+      background: "#0a0f1a",
+      padding: "24px",
+      minHeight: "100vh",
+      fontFamily: "Inter, -apple-system, sans-serif"
+    }}>
       <DemoBanner />
-      <div className="mx-auto max-w-4xl px-6 py-10">
-        <div className="text-xs font-mono tracking-widest text-guardian-text-secondary">
+      <div className="mx-auto max-w-4xl">
+        <div style={{
+          fontSize: "13px",
+          fontWeight: 600,
+          letterSpacing: "0.1em",
+          color: "#4a5568",
+          marginBottom: "20px"
+        }}>
           TRUSTED CONTACTS
         </div>
 
-        <section className="mt-4 rounded-xl border border-guardian-border-subtle bg-guardian-bg-surface p-4">
-          <div className="text-sm font-semibold">Add Trusted Contact</div>
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
+        <section style={{
+          borderRadius: "16px",
+          border: "1px solid #1e2d3d",
+          background: "#111827",
+          padding: "24px",
+          boxShadow: "0 2px 12px rgba(0,0,0,0.4)"
+        }}>
+          <div style={{ fontSize: "18px", fontWeight: 600, color: "#ffffff" }}>Add Trusted Contact</div>
+          <div style={{
+            marginTop: "16px",
+            display: "grid",
+            gap: "12px",
+            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))"
+          }}>
             <input
               value={name}
               onChange={(event) => setName(event.target.value)}
               placeholder="Name"
-              className="rounded-md border border-guardian-border-subtle bg-guardian-bg-base p-3 text-sm outline-none focus:ring-2 focus:ring-guardian-border-accent"
+              style={{
+                borderRadius: "10px",
+                border: "1px solid #1e2d3d",
+                background: "#0d1520",
+                padding: "14px 16px",
+                fontSize: "15px",
+                color: "#ffffff",
+                outline: "none"
+              }}
             />
             <input
               value={phone}
               onChange={(event) => setPhone(event.target.value)}
               placeholder="Phone"
-              className="rounded-md border border-guardian-border-subtle bg-guardian-bg-base p-3 text-sm outline-none focus:ring-2 focus:ring-guardian-border-accent"
+              style={{
+                borderRadius: "10px",
+                border: "1px solid #1e2d3d",
+                background: "#0d1520",
+                padding: "14px 16px",
+                fontSize: "15px",
+                color: "#ffffff",
+                outline: "none"
+              }}
             />
             <input
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="Email (optional)"
-              className="rounded-md border border-guardian-border-subtle bg-guardian-bg-base p-3 text-sm outline-none focus:ring-2 focus:ring-guardian-border-accent"
+              style={{
+                borderRadius: "10px",
+                border: "1px solid #1e2d3d",
+                background: "#0d1520",
+                padding: "14px 16px",
+                fontSize: "15px",
+                color: "#ffffff",
+                outline: "none"
+              }}
             />
             <select
               value={relation}
               onChange={(event) => setRelation(event.target.value as ContactRelation)}
-              className="rounded-md border border-guardian-border-subtle bg-guardian-bg-base p-3 text-sm outline-none focus:ring-2 focus:ring-guardian-border-accent"
+              style={{
+                borderRadius: "10px",
+                border: "1px solid #1e2d3d",
+                background: "#0d1520",
+                padding: "14px 16px",
+                fontSize: "15px",
+                color: "#ffffff",
+                outline: "none"
+              }}
             >
               <option value="family">Family</option>
               <option value="friend">Friend</option>
@@ -107,13 +161,37 @@ export default function Contacts(): React.ReactElement {
             type="button"
             onClick={() => createMutation.mutate()}
             disabled={createMutation.isPending || !name.trim() || !phone.trim()}
-            className="mt-4 rounded-md bg-guardian-signal-safe px-4 py-3 text-sm font-semibold text-guardian-text-inverse disabled:opacity-60"
+            style={{
+              width: "100%",
+              height: "52px",
+              background: "#22c55e",
+              color: "#0a0f1a",
+              fontSize: "15px",
+              fontWeight: 700,
+              letterSpacing: "0.06em",
+              borderRadius: "12px",
+              border: "none",
+              marginTop: "16px",
+              cursor: "pointer",
+              transition: "background-color 150ms",
+              opacity: (createMutation.isPending || !name.trim() || !phone.trim()) ? 0.6 : 1
+            }}
+            onMouseOver={(e) => {
+              if (!createMutation.isPending && name.trim() && phone.trim()) {
+                e.currentTarget.style.background = "#16a34a";
+              }
+            }}
+            onMouseOut={(e) => {
+              if (!createMutation.isPending && name.trim() && phone.trim()) {
+                e.currentTarget.style.background = "#22c55e";
+              }
+            }}
           >
             {createMutation.isPending ? "ADDING…" : "ADD CONTACT"}
           </button>
-          {feedback ? <div className="mt-3 text-sm text-guardian-signal-safe">{feedback}</div> : null}
+          {feedback ? <div style={{ marginTop: "12px", fontSize: "13px", color: "#22c55e" }}>{feedback}</div> : null}
           {createMutation.isError ? (
-            <div className="mt-3 text-sm text-guardian-signal-danger">
+            <div style={{ marginTop: "12px", fontSize: "13px", color: "#ef4444" }}>
               {createMutation.error instanceof Error
                 ? createMutation.error.message
                 : "Failed to add contact."}
@@ -121,35 +199,86 @@ export default function Contacts(): React.ReactElement {
           ) : null}
         </section>
 
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
+        <div style={{
+          marginTop: "16px",
+          display: "grid",
+          gap: "12px",
+          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))"
+        }}>
           {(contactsQuery.data ?? []).map((contact, index) => (
             <div
               key={contact.id}
-              className="rounded-xl border border-guardian-border-subtle bg-guardian-bg-surface p-4"
+              style={{
+                borderRadius: "16px",
+                border: "1px solid #1e2d3d",
+                background: "#111827",
+                padding: "16px 20px"
+              }}
             >
-              <div className="flex items-center justify-between gap-3">
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "12px"
+              }}>
                 <div>
-                  <div className="text-sm font-semibold">{contact.name}</div>
-                  <div className="text-xs text-guardian-text-secondary">
+                  <div style={{ fontSize: "16px", fontWeight: 600, color: "#ffffff" }}>{contact.name}</div>
+                  <div style={{ fontSize: "13px", color: "#6b7280", marginTop: "2px" }}>
                     Priority {index + 1} · {contact.relation}
                   </div>
-                  <div className="mt-1 text-xs text-guardian-text-secondary">{contact.phone}</div>
+                  <div style={{ fontSize: "13px", color: "#6b7280", marginTop: "4px" }}>{contact.phone}</div>
                   {contact.email ? (
-                    <div className="text-xs text-guardian-text-secondary">{contact.email}</div>
+                    <div style={{ fontSize: "13px", color: "#6b7280" }}>{contact.email}</div>
                   ) : null}
                 </div>
-                <div className="flex flex-col gap-2">
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                   <button
                     type="button"
-                    className="rounded-md border border-guardian-border-default bg-guardian-bg-elevated px-3 py-2 text-xs font-mono text-guardian-text-primary focus:outline-none focus:ring-2 focus:ring-guardian-border-accent"
+                    style={{
+                      borderRadius: "8px",
+                      border: "1px solid #1e2d3d",
+                      background: "#111827",
+                      padding: "6px 12px",
+                      fontSize: "12px",
+                      fontWeight: 500,
+                      color: "#cbd5e1",
+                      cursor: "pointer",
+                      transition: "all 150ms"
+                    }}
                     onClick={() => testAlertMutation.mutate(contact.id)}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.borderColor = "#22c55e";
+                      e.currentTarget.style.color = "#22c55e";
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.borderColor = "#1e2d3d";
+                      e.currentTarget.style.color = "#cbd5e1";
+                    }}
                   >
                     TEST ALERT
                   </button>
                   <button
                     type="button"
-                    className="rounded-md border border-guardian-border-default bg-guardian-bg-elevated px-3 py-2 text-xs font-mono text-guardian-text-primary focus:outline-none focus:ring-2 focus:ring-guardian-border-accent"
+                    style={{
+                      borderRadius: "8px",
+                      border: "1px solid #1e2d3d",
+                      background: "#111827",
+                      padding: "6px 12px",
+                      fontSize: "12px",
+                      fontWeight: 500,
+                      color: "#cbd5e1",
+                      cursor: "pointer",
+                      transition: "all 150ms"
+                    }}
                     onClick={() => deleteMutation.mutate(contact.id)}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.borderColor = "#ef4444";
+                      e.currentTarget.style.color = "#ef4444";
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.borderColor = "#1e2d3d";
+                      e.currentTarget.style.color = "#cbd5e1";
+                    }}
                   >
                     REMOVE
                   </button>
@@ -158,7 +287,14 @@ export default function Contacts(): React.ReactElement {
             </div>
           ))}
           {contactsQuery.isLoading ? (
-            <div className="rounded-xl border border-guardian-border-subtle bg-guardian-bg-surface p-4 text-sm text-guardian-text-secondary">
+            <div style={{
+              borderRadius: "16px",
+              border: "1px solid #1e2d3d",
+              background: "#111827",
+              padding: "16px 20px",
+              fontSize: "14px",
+              color: "#cbd5e1"
+            }}>
               Loading contacts…
             </div>
           ) : null}
