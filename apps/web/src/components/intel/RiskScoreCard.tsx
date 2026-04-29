@@ -54,48 +54,90 @@ export function RiskScoreCard(props: { demo: boolean }): React.ReactElement {
 
   return (
     <section 
-      className="rounded-lg p-4"
       style={{ 
-        backgroundColor: "#0F1520",
-        border: "1px solid rgba(148,163,184,0.12)"
+        background: "#0d1520",
+        borderRadius: "20px",
+        padding: "28px 28px 20px 28px",
+        border: "1px solid rgba(255,255,255,0.06)",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.6)",
+        width: "100%"
       }}
     >
       <div 
-        className="text-[10px] font-mono tracking-widest uppercase"
-        style={{ color: "#4B5563" }}
+        style={{
+          fontFamily: "'Courier New', monospace",
+          fontSize: "11px",
+          letterSpacing: "0.18em",
+          color: "#6b7a8d",
+          textTransform: "uppercase",
+          marginBottom: "16px"
+        }}
       >
-        Area Risk
+        AREA RISK
       </div>
 
-      <div className="mt-2 flex items-baseline justify-between">
+      <div style={{ 
+        display: "flex",
+        alignItems: "baseline",
+        justifyContent: "space-between",
+        marginBottom: "16px"
+      }}>
         <div 
-          className="text-lg font-semibold"
           style={{ 
-            color: score >= 0.7 ? "#FF3B5C" : score >= 0.5 ? "#F59E0B" : "#22C55E"
+            fontFamily: "'Courier New', monospace",
+            fontSize: "52px",
+            fontWeight: "800",
+            color: score >= 0.7 ? "#FF3B5C" : score >= 0.5 ? "#F59E0B" : "#22c55e",
+            textShadow: score >= 0.7 ? "0 0 30px rgba(255,59,92,0.5), 0 0 60px rgba(255,59,92,0.25)" : score >= 0.5 ? "0 0 30px rgba(245,158,11,0.5), 0 0 60px rgba(245,158,11,0.25)" : "0 0 30px rgba(34,197,94,0.5), 0 0 60px rgba(34,197,94,0.25)",
+            lineHeight: "1"
           }}
         >
           {meta.label}
         </div>
-        <div className="text-sm font-mono" style={{ color: "#94A3B8" }}>{pct}%</div>
+        <div style={{ 
+          fontFamily: "'Courier New', monospace",
+          fontSize: "26px", 
+          fontWeight: "500", 
+          color: "#6b7a8d"
+        }}>
+          {pct}%
+        </div>
       </div>
 
       <div 
-        className="mt-3 h-[6px] w-full overflow-hidden rounded-full"
-        style={{ backgroundColor: "#1A2235" }}
+        style={{ 
+          height: "8px",
+          background: "#1a2535",
+          borderRadius: "999px",
+          margin: "20px 0 20px 0",
+          width: "100%"
+        }}
       >
         <div 
-          className="h-full"
           style={{ 
+            height: "8px",
             width: `${pct}%`,
-            backgroundColor: score >= 0.7 ? "#FF3B5C" : score >= 0.5 ? "#F59E0B" : "#22C55E"
+            background: score >= 0.7 ? "linear-gradient(90deg, #dc2626 0%, #FF3B5C 60%, #f87171 100%)" : score >= 0.5 ? "linear-gradient(90deg, #d97706 0%, #F59E0B 60%, #fbbf24 100%)" : "linear-gradient(90deg, #16a34a 0%, #22c55e 60%, #4ade80 100%)",
+            borderRadius: "999px",
+            boxShadow: score >= 0.7 ? "0 0 16px rgba(255,59,92,0.7), 0 0 32px rgba(255,59,92,0.4)" : score >= 0.5 ? "0 0 16px rgba(245,158,11,0.7), 0 0 32px rgba(245,158,11,0.4)" : "0 0 16px rgba(34,197,94,0.7), 0 0 32px rgba(34,197,94,0.4)"
           }}
         />
       </div>
 
       {intel.length > 0 && (
-        <div className="mt-4 space-y-1 border-t pt-3" style={{ borderColor: "rgba(148,163,184,0.08)" }}>
+        <div style={{ 
+          marginTop: "16px", 
+          paddingTop: "12px",
+          borderTop: "1px solid rgba(148,163,184,0.08)",
+          fontFamily: "'Courier New', monospace"
+        }}>
           {intel.map((i) => (
-            <div key={i.label} className={`text-sm ${i.tone}`}>
+            <div key={i.label} style={{ 
+              fontSize: "14px",
+              marginBottom: "4px",
+              color: "#94a3b8",
+              fontFamily: "'Courier New', monospace"
+            }}>
               {i.label}
             </div>
           ))}
@@ -105,21 +147,33 @@ export function RiskScoreCard(props: { demo: boolean }): React.ReactElement {
       <button
         type="button"
         onClick={() => setShowAnalysis((value) => !value)}
-        className="mt-4 w-full rounded-md px-3 py-2 text-xs font-mono transition-colors focus:outline-none"
         style={{
           width: "100%",
-          padding: "10px",
-          background: "rgba(59,130,246,0.1)",
+          height: "54px",
+          background: "linear-gradient(135deg, #0f2744 0%, #1a3a5c 100%)",
           border: "1px solid rgba(59,130,246,0.25)",
-          borderRadius: "8px",
-          color: "#3B82F6",
+          borderRadius: "14px",
+          color: "#60a5fa",
+          fontFamily: "'Courier New', monospace",
           fontSize: "13px",
-          fontWeight: "500",
+          fontWeight: "700",
+          letterSpacing: "0.14em",
+          textTransform: "uppercase",
           cursor: "pointer",
-          letterSpacing: "0.5px"
+          transition: "all 200ms ease"
+        }}
+        onMouseOver={(e) => {
+          e.currentTarget.style.background = "linear-gradient(135deg, #1a3a5c, #1e4976)";
+          e.currentTarget.style.borderColor = "rgba(59,130,246,0.5)";
+          e.currentTarget.style.boxShadow = "0 0 24px rgba(59,130,246,0.2)";
+        }}
+        onMouseOut={(e) => {
+          e.currentTarget.style.background = "linear-gradient(135deg, #0f2744 0%, #1a3a5c 100%)";
+          e.currentTarget.style.borderColor = "rgba(59,130,246,0.25)";
+          e.currentTarget.style.boxShadow = "none";
         }}
       >
-        {showAnalysis ? "▼" : "RUN AI ANALYSIS"}
+        RUN AI ANALYSIS
       </button>
       {showAnalysis ? (
         <div 

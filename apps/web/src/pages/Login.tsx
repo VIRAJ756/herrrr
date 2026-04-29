@@ -78,17 +78,18 @@ export default function Login(): React.ReactElement {
   }
 
   return (
-    <div
-      style={{
-        position: 'relative',
-        minHeight: '100vh',
-        width: '100%',
-        overflow: 'hidden',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <>
+      <div
+        style={{
+          position: 'relative',
+          minHeight: '100vh',
+          width: '100%',
+          overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
       {/* Full screen background image */}
       <div
         style={{
@@ -147,20 +148,54 @@ export default function Login(): React.ReactElement {
           textAlign: "center",
           marginBottom: "24px"
         }}>
-          <div style={{
-            margin: "0 auto 12px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "48px",
-            height: "48px",
-            borderRadius: "12px",
-            border: "1px solid rgba(255,255,255,0.15)",
-            background: "#111827"
-          }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 2l7 3v6c0 5.2-3.3 9.8-7 11-3.7-1.2-7-5.8-7-11V5l7-3z" fill="#06b6d4" />
-            </svg>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '24px' }}>
+            
+            <div style={{ position: 'relative', width: '100px', height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
+              
+              <div style={{
+                position: 'absolute',
+                width: '80px', height: '80px',
+                borderRadius: '50%',
+                border: '2px solid #e8705a',
+                top: '50%', left: '50%',
+                margin: '-40px 0 0 -40px',
+                animation: 'pulseRing 2s ease-out infinite'
+              }} />
+
+              <div style={{
+                position: 'absolute',
+                width: '80px', height: '80px',
+                borderRadius: '50%',
+                border: '1px solid #e8705a',
+                top: '50%', left: '50%',
+                margin: '-40px 0 0 -40px',
+                animation: 'pulseRing 2s ease-out infinite 0.5s'
+              }} />
+
+              <div style={{
+                width: '70px',
+                height: '70px',
+                borderRadius: '50%',
+                overflow: 'hidden',
+                border: '3px solid #e8705a',
+                animation: 'float3d 5s ease-in-out infinite',
+                boxShadow: '0 0 30px rgba(232,112,90,0.4)',
+                position: 'relative',
+                zIndex: 2
+              }}>
+                <img
+                  src="/images/guardian-hero.jpg"
+                  alt="Guardian"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    objectPosition: 'center'
+                  }}
+                />
+              </div>
+            </div>
+
           </div>
           <h1 style={{ fontSize: "24px", fontWeight: 600 }}>Guardian</h1>
           <p style={{ marginTop: "4px", fontSize: "14px", color: "#94a3b8" }}>Your personal safety companion</p>
@@ -270,6 +305,18 @@ export default function Login(): React.ReactElement {
         </main>
       </div>
     </div>
+      <style>{`
+        @keyframes float3d {
+          0%,100% { transform: perspective(600px) rotateY(-8deg) rotateX(4deg) translateY(0px); }
+          50% { transform: perspective(600px) rotateY(8deg) rotateX(-4deg) translateY(-8px); }
+        }
+
+        @keyframes pulseRing {
+          0% { transform: scale(1); opacity: 0.8; }
+          100% { transform: scale(1.6); opacity: 0; }
+        }
+      `}</style>
+    </>
   );
 }
 
