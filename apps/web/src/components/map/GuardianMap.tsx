@@ -79,6 +79,7 @@ export function GuardianMap(props: { demo: boolean; userLat?: number; userLng?: 
   const [isGettingRoute, setIsGettingRoute] = useState(false);
   const [routeError, setRouteError] = useState('');
   const [routeInfo, setRouteInfo] = useState({ distance: '', duration: '' });
+  const [dashOffset, setDashOffset] = useState('0');
 
   const { point } = useGeolocation();
   const { toggles } = useMapStore();
@@ -100,6 +101,13 @@ export function GuardianMap(props: { demo: boolean; userLat?: number; userLng?: 
     L.tileLayer("https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png", {
       attribution: "&copy; Stadia Maps",
       maxZoom: 19,
+    }).addTo(map);
+
+    // Add comprehensive label layer for better POI visibility and label rendering
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors",
+      maxZoom: 19,
+      opacity: 0.8
     }).addTo(map);
 
     mapRef.current = map;
@@ -150,6 +158,17 @@ export function GuardianMap(props: { demo: boolean; userLat?: number; userLng?: 
     liveMarkerRef.current = null;
   }, [toggles.liveTracking]);
 
+  // Animation effect for dashed route line
+  useEffect(() => {
+    if (!safeRouteRef.current) return;
+    let count = 0;
+    const interval = setInterval(() => {
+      count = (count + 1) % 200;
+      setDashOffset(`-${count}px`);
+    }, 40);
+    return () => clearInterval(interval);
+  }, [safeRouteRef.current]);
+
   // Call geocoding and routing APIs for destination-based route
   const fetchSafeRoute = async () => {
     if (!destinationInput.trim() || !point || !mapRef.current) return;
@@ -199,14 +218,25 @@ export function GuardianMap(props: { demo: boolean; userLat?: number; userLng?: 
       safeRouteMarkersRef.current.forEach(marker => marker.removeFrom(map));
       safeRouteMarkersRef.current = [];
 
-      // Draw new polyline
-      const polyline = L.polyline(latLngs, {
-        color: '#22c55e',
-        weight: 5,
-        opacity: 0.85,
-        dashArray: '10 6'
+      // Draw new polylines with glow and animation
+      // Layer 1 - Glow/Shadow base line (underneath)
+      const glowPolyline = L.polyline(latLngs, {
+        color: '#00ff88',
+        weight: 16,
+        opacity: 0.25
       }).addTo(map);
-      safeRouteRef.current = polyline;
+      
+      // Layer 2 - Main animated dashed line (on top)
+      const mainPolyline = L.polyline(latLngs, {
+        color: '#00e676',
+        weight: 6,
+        opacity: 1,
+        dashArray: '10 6',
+        dashOffset: dashOffset
+      }).addTo(map);
+      
+      // Store reference to main polyline for animation
+      safeRouteRef.current = mainPolyline;
 
       // Fit map to show full route
       map.fitBounds(L.polyline(latLngs).getBounds(), { padding: [60, 60] });
