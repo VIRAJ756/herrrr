@@ -2,19 +2,20 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
 const NAV = [
-  { to: "/dashboard", label: "Dashboard", icon: "⌂" },
-  { to: "/journey", label: "Journey", icon: "➜" },
-  { to: "/incidents", label: "Incidents", icon: "⚠" },
-  { to: "/settings", label: "Settings", icon: "⚙" },
+  { to: "/feed", label: "Home", icon: "⌂" },
+  { to: "/incidents", label: "Alerts", icon: "⚠" },
+  { to: "/contacts", label: "Guardians", icon: "👥" },
+  { to: "/dashboard", label: "Dashboard", icon: "📊" },
+  { to: "/settings", label: "Profile", icon: "⚙" },
 ];
 
 export function MobileNav(): React.ReactElement {
   const location = useLocation();
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-white/10 bg-[#111827] md:hidden">
-      <div className="grid grid-cols-4">
+      <div className="grid grid-cols-5">
         {NAV.map((item) => {
-          const active = location.pathname === item.to;
+          const active = location.pathname === item.to || (item.to === "/dashboard" && location.pathname === "/");
           return (
             <Link
               key={item.to}

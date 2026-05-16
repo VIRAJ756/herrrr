@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { getRiskZones } from "../services/riskEngine";
+import type * as GeoJSON from "geojson";
 
 type HeatmapFeatureCollection = GeoJSON.FeatureCollection<
   GeoJSON.Point,

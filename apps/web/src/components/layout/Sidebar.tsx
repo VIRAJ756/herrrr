@@ -82,7 +82,7 @@ export function Sidebar(): React.ReactElement {
       <div className="flex flex-col gap-1 px-3">
         <img
   src="/images/guardian-hero.jpg"
-  alt="STREE ASTRA Safety"
+  alt="TRINETRA Safety"
   style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '12px', marginBottom: '24px' }}
 />
         <div style={{ 

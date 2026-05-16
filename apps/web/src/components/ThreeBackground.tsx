@@ -228,7 +228,7 @@ export default function ThreeBackground() {
         p.position.y += p.userData.spd;
         p.position.x += Math.sin(t * 1.5 + p.userData.off) * 0.006;
         if (p.position.y > 5.5) { p.position.y = 2.0; p.position.z = girl.position.z + (Math.random() - 0.5) * 1.5; }
-        p.material.opacity = 0.3 + Math.sin(t * 3 + p.userData.off) * 0.5;
+        (p.material as any).opacity = 0.3 + Math.sin(t * 3 + p.userData.off) * 0.5;
       });
       const rp = rain.geometry.attributes.position;
       for (let i = 1; i < rp.count * 3; i += 3) { rp.array[i] -= 0.12; if (rp.array[i] < -1) rp.array[i] = 17; }

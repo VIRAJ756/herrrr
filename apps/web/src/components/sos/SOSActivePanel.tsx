@@ -21,7 +21,7 @@ async function fetchContacts(): Promise<Contact[]> {
 /** Generate WhatsApp message with GPS coordinates */
 const generateWhatsAppMessage = (lat: number, lng: number, userName: string) => {
   const googleMapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
-  const message = `🚨 SOS ALERT from ${userName}!\n\nI need help immediately. This is an emergency.\n\n📍 My exact location:\n${googleMapsLink}\n\nCoordinates: ${lat.toFixed(6)}, ${lng.toFixed(6)}\n\nSent via STREE ASTRA Safety App`;
+  const message = `🚨 SOS ALERT from ${userName}!\n\nI need help immediately. This is an emergency.\n\n📍 My exact location:\n${googleMapsLink}\n\nCoordinates: ${lat.toFixed(6)}, ${lng.toFixed(6)}\n\nSent via TRINETRA Safety App`;
   return encodeURIComponent(message);
 };
 

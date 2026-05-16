@@ -147,3 +147,13 @@ enum SOSStatus {
   FALSE_ALARM
 }
 
+model EvidenceRecord {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  photoFile String?
+  audioFile String?
+  lat       Float?
+  lng       Float?
+  timestamp String?
+  createdAt DateTime @default(now())
+}

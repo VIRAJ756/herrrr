@@ -50,7 +50,7 @@ export default function Login(): React.ReactElement {
     if (!validateSignIn()) return;
     void fakeProcess(() =>
       setDemoUser({
-        name: signinEmail.split("@")[0] || "Stree Astra User",
+        name: signinEmail.split("@")[0] || "Trinetra User",
         email: signinEmail,
         loggedIn: true,
       }),
@@ -72,7 +72,7 @@ export default function Login(): React.ReactElement {
     void fakeProcess(() =>
       setDemoUser({
         name: "Demo User",
-        email: "demo@streeastra.app",
+        email: "demo@trinetra.app",
         loggedIn: true,
       }),
     );
@@ -160,7 +160,7 @@ export default function Login(): React.ReactElement {
               }}>
                 <img
                   src="/images/guardian-hero.jpg"
-                  alt="STREE ASTRA"
+                  alt="TRINETRA"
                   style={{
                     width: '100%',
                     height: '100%',
@@ -172,8 +172,8 @@ export default function Login(): React.ReactElement {
             </div>
 
           </div>
-          <h1 style={{ fontSize: "24px", fontWeight: 600 }}>STREE ASTRA</h1>
-          <p style={{ marginTop: "4px", fontSize: "14px", color: "#94a3b8" }}>Your personal safety companion</p>
+          <h1 style={{ fontSize: "24px", fontWeight: 600 }}>TRINETRA</h1>
+          <p style={{ marginTop: "4px", fontSize: "14px", color: "#94a3b8" }}>Your Campus Safety Companion</p>
         </div>
 
         <section style={{

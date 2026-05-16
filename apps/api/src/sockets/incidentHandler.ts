@@ -39,7 +39,7 @@ export function incidentHandler(io: SocketIOServer, socket: Socket, _env: Env): 
         longitude: parsed.data.longitude,
         type: parsed.data.type,
         description: parsed.data.description,
-        mediaUrls: parsed.data.mediaUrls,
+        mediaUrls: parsed.data.mediaUrls.length ? parsed.data.mediaUrls.join(',') : null,
         severity: parsed.data.severity,
         isAnonymous: parsed.data.isAnonymous,
       },

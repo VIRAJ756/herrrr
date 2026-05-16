@@ -30,7 +30,7 @@ export function journeyRouter(): Router {
           update: {},
           create: {
             id: userId,
-            name: "Stree Astra Demo User",
+            name: "Trinetra Demo User",
           },
         });
       }

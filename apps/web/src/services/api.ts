@@ -17,7 +17,7 @@ export const api: AxiosInstance = axios.create({
 api.interceptors.request.use(async (config) => {
   // Auth is optional in the local SQLite build; this resolves to null.
   const session = await supabase.auth.getSession();
-  const accessToken = session.data.session?.access_token;
+  const accessToken = (session.data.session as any)?.access_token;
   if (accessToken) {
     config.headers = config.headers ?? {};
     config.headers.Authorization = `Bearer ${accessToken}`;

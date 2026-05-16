@@ -36,8 +36,8 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-.streeastra-leaflet-map,
-.streeastra-leaflet-map .leaflet-container {
+.trinetra-leaflet-map,
+.trinetra-leaflet-map .leaflet-container {
   position: absolute;
   inset: 0;
   height: 100%;
@@ -45,19 +45,19 @@ body {
   z-index: 0;
 }
 
-.streeastra-leaflet-map .leaflet-pane,
-.streeastra-leaflet-map .leaflet-tile-pane,
-.streeastra-leaflet-map .leaflet-overlay-pane,
-.streeastra-leaflet-map .leaflet-shadow-pane,
-.streeastra-leaflet-map .leaflet-marker-pane,
-.streeastra-leaflet-map .leaflet-tooltip-pane,
-.streeastra-leaflet-map .leaflet-popup-pane {
+.trinetra-leaflet-map .leaflet-pane,
+.trinetra-leaflet-map .leaflet-tile-pane,
+.trinetra-leaflet-map .leaflet-overlay-pane,
+.trinetra-leaflet-map .leaflet-shadow-pane,
+.trinetra-leaflet-map .leaflet-marker-pane,
+.trinetra-leaflet-map .leaflet-tooltip-pane,
+.trinetra-leaflet-map .leaflet-popup-pane {
   z-index: 1;
 }
 
-.streeastra-leaflet-map .leaflet-top,
-.streeastra-leaflet-map .leaflet-bottom,
-.streeastra-leaflet-map .leaflet-control {
+.trinetra-leaflet-map .leaflet-top,
+.trinetra-leaflet-map .leaflet-bottom,
+.trinetra-leaflet-map .leaflet-control {
   z-index: 5;
 }
 

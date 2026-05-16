@@ -1,0 +1,1 @@
+import{c as t}from"./react-DgbIh752.js";const r=t(o=>({stage:"IDLE",countdownSeconds:5,activeAlertId:void 0,fakeCallerName:"Priya",sosCoordinates:void 0,setStage:e=>o({stage:e}),setCountdown:e=>o({countdownSeconds:e}),setActiveAlertId:e=>o({activeAlertId:e}),setFakeCallerName:e=>o({fakeCallerName:e}),setSosCoordinates:e=>o({sosCoordinates:e})}));export{r as u};

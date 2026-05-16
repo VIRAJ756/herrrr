@@ -11,6 +11,8 @@ import { sosRouter } from "./routes/sos";
 import { journeyRouter } from "./routes/journey";
 import { contactsRouter } from "./routes/contacts";
 import { aiRouter } from "./routes/ai";
+import evidenceRouter from "./routes/evidence";
+import path from "path";
 
 /** Build the Express app with all routes and middleware. */
 export function createApp(env: Env): express.Express {
@@ -37,6 +39,14 @@ export function createApp(env: Env): express.Express {
   app.use("/api/journey", journeyRouter());
   app.use("/api/contacts", contactsRouter());
   app.use("/api/ai", aiRouter(env));
+  app.use("/api/evidence", evidenceRouter);
+
+  app.use("/uploads", (_req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    next();
+  });
+  app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
   app.use((_req, res) => {
     res.status(404).json({ error: { code: "NOT_FOUND", message: "Route not found." } });

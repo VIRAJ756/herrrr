@@ -173,7 +173,7 @@ export function RiskScoreCard(props: { demo: boolean }): React.ReactElement {
           e.currentTarget.style.boxShadow = "none";
         }}
       >
-        RUN AI ANALYSIS
+        PREDICTIVE ANALYTICS
       </button>
       {showAnalysis ? (
         <div 

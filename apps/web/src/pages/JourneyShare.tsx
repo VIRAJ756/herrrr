@@ -100,14 +100,14 @@ export default function JourneyShare(): React.ReactElement {
   ) => {
     const trackingUrl = `${window.location.origin}/track/${journeyId}`;
     return encodeURIComponent(
-      `📍 *STREE ASTRA Live Journey Alert*\n\n` +
+      `📍 *TRINETRA Live Journey Alert*\n\n` +
       `*${userName}* has started a journey and is sharing live location with you.\n\n` +
       `🗺 *Destination:* ${destination}\n` +
       `🕐 *Expected arrival:* ${eta}\n\n` +
       `🔴 *Track live location here:*\n${trackingUrl}\n\n` +
       `Open the link above to see their real-time position on a map.\n` +
       `If they don't arrive by ${eta}, please check on them immediately.\n\n` +
-      `— STREE ASTRA Safety App`
+      `— TRINETRA Safety App`
     );
   };
 
@@ -188,7 +188,7 @@ export default function JourneyShare(): React.ReactElement {
         }}>
           <span style={{ color: "#4a5568" }}>JOURNEY</span>
           <span style={{ color: "#4a5568", margin: "0 8px" }}>/</span>
-          <span style={{ color: "#ffffff", fontWeight: 800 }}>TRACKING</span>
+          <span style={{ color: "#ffffff", fontWeight: 800 }}>GUARDIAN TRACKING</span>
         </div>
 
         {!activeJourney ? (
@@ -245,7 +245,7 @@ export default function JourneyShare(): React.ReactElement {
                 background: "#0d1520"
               }}>
                 <div style={{ fontSize: "11px", color: "#4a5568", letterSpacing: "0.1em", fontWeight: 600 }}>
-                  SAFE ROUTE ESTIMATE
+                  SAFE ROUTE NAVIGATION
                 </div>
                 <div className="mt-2" style={{ fontSize: "13px", color: "#cbd5e1" }}>
                   ETA: {safeRouteQuery.data.estimatedTime} min · Risk segments: {" "}

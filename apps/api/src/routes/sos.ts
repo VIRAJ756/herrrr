@@ -4,6 +4,7 @@ import { prisma } from "../prisma/client";
 import { sendSosSmsNotifications } from "../services/notifier";
 import type { Env } from "../config/env";
 
+
 /** SOS REST endpoints (socket events are primary). */
 export function sosRouter(env: Env): Router {
   const r = Router();
@@ -50,6 +51,7 @@ export function sosRouter(env: Env): Router {
       next(error);
     }
   });
+
   return r;
 }
 

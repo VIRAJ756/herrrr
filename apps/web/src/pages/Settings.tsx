@@ -118,7 +118,7 @@ export default function Settings(): React.ReactElement {
                 cursor: "pointer"
               }}
             >
-              <span style={{ fontSize: "15px", color: "#ffffff", fontWeight: 400 }}>Voice activation: "Hey STREE ASTRA, SOS"</span>
+              <span style={{ fontSize: "15px", color: "#ffffff", fontWeight: 400 }}>Say "Help" or "SOS" to trigger</span>
               <div style={{
                 width: "44px",
                 height: "24px",
@@ -196,7 +196,7 @@ export default function Settings(): React.ReactElement {
                 {user?.name ?? "Demo User"}
               </div>
               <div style={{ fontSize: "14px", color: "#6b7280", marginTop: "2px" }}>
-                {user?.email ?? "demo@streeastra.app"}
+                {user?.email ?? "demo@trinetra.app"}
               </div>
               <button
                 type="button"

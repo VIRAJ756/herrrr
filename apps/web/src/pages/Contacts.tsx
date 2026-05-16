@@ -102,7 +102,7 @@ export default function Contacts(): React.ReactElement {
           color: "#4a5568",
           marginBottom: "20px"
         }}>
-          TRUSTED CONTACTS
+          GUARDIAN TRACKING
         </div>
 
         <section style={{
